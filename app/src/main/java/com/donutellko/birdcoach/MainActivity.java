@@ -35,18 +35,17 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     Главное активити.
-     Здесь распологаются:
-        1) Кнопка выбора режима игры    -
-        2) Кнопка "Настройки"           -
-        3) Кнопка "Как играть?"         - HowToPlayActivity
+     * Главное активити.
+     * Здесь распологаются:
+     * 1) Кнопка выбора режима игры    -
+     * 2) Кнопка "Настройки"           -
+     * 3) Кнопка "Как играть?"         - HowToPlayActivity
      */
 
     /*
         Используемые названия:
             bPlay - кнопка вызова меню выбора режима игры
      */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

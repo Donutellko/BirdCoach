@@ -29,11 +29,11 @@ public class EndlessView extends View {
     public void drawBG(Canvas canvas) {
         Paint paint = new Paint();
 
-       Bitmap bg = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-       Bitmap bg_wire = BitmapFactory.decodeResource(getResources(), R.drawable.bg_wire);
+        Bitmap bg = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+        Bitmap bg_wire = BitmapFactory.decodeResource(getResources(), R.drawable.bg_wire);
 
-       bg = Bitmap.createScaledBitmap(bg, w, h, false);
-       bg_wire = Bitmap.createScaledBitmap(bg_wire, w, h, false);
+        bg = Bitmap.createScaledBitmap(bg, w, h, false);
+        bg_wire = Bitmap.createScaledBitmap(bg_wire, w, h, false);
 
         canvas.drawBitmap(bg, 0, 0, paint);
         canvas.drawBitmap(bg_wire, 0, 0, paint);
