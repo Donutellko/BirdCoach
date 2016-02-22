@@ -10,7 +10,7 @@ public class EndlessActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new EndlessView(this));
+        setContentView(new EndlessView(this));  // Вся деят-ть активности в EndlessView.
     }
 
 }

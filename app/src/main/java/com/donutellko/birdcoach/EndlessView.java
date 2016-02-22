@@ -8,6 +8,10 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
 
 public class EndlessView extends View {
 
@@ -15,6 +19,13 @@ public class EndlessView extends View {
     public int w, h;
     // подсчёт очков:
     public int time = 0, level = 1, scores = 0;
+
+    Bitmap[] birdImg = new Bitmap[9];   //
+    int[][] position = new int[20][2];   // список координат, по которым будут раскиданы птицы. [][0] - X, [][1] - Y
+
+    int[] order = new int[1];
+
+    private List<Birds> birds = new LinkedList<Birds>();
 
     public EndlessView(Context context) {
         super(context);
@@ -28,9 +39,10 @@ public class EndlessView extends View {
         // отобразить фон
         drawBG(canvas);
 
-
         // отобразить птиц
-
+        for (Birds b : birds) {
+            b.draw(canvas);
+        }
 
         invalidate();
 
@@ -56,29 +68,50 @@ public class EndlessView extends View {
     public boolean onTouchEvent(MotionEvent event) {
 
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-
             if (level == 0) {
                 level = 1;
                 // скрыть приветствие.
 
                 // запустить первый уровень.
                 startLevel(1);
-            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                // определяем, к какой птице прикоснулись
+            } else {    // если прикоснулись к птице
+                for (Birds b : birds) {
+                    // if (getX() >= b.x)
+                }
+            }
 
+        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                // определяем, к какой птице прикоснулись
+            for (Birds b : birds) {
+                if (getX() > b.x && getX() < b.x + b.size && getY() > b.y && getY() < b.y + b.size) {
+
+                }
+            }
                 // меняем её координаты
 
-            }
+        }
 
         return true;
     }
 
     private void startLevel(int level) {
         // сгенерировать новый уровень
+        int count = 4 + level / 4;
 
+        order = generateMelody(count);
         // отобразить птиц
-
+        for (int i = 0; i < count; i++) {
+            birds.add(new Birds(position[i][0], position[i][1], birdImg[order[i]], h / 15));
+        }
         // запустить секундомер
 
+    }
+
+    private int[] generateMelody(int count) {
+        int order[] = new int[count];
+        Random random = new Random();
+        for (int i = 0; i < count; i++)
+            order[i] = (random.nextInt(6) + 1);
+        return order;
     }
 }
