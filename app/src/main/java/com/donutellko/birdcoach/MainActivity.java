@@ -27,10 +27,9 @@ import android.view.View;
 /*
  Список Activity:
      _ MainActivity
-     _
+     _ EndlessActivity для бесконечного режима игры
 
  */
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
     /*
         Используемые названия:
             bPlay - кнопка вызова меню выбора режима игры
-     */
+    */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_main);
     }
