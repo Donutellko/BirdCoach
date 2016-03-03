@@ -21,4 +21,4 @@
         android:layout_alignParentEnd="true"
         android:onClick="cPlayEndless" />
 </RelativeLayout>
-<!-- From: file:/media/donat/Data/AndroidStudio_WS/BirdCoach/app/src/main/res/layout/activity_main.xml -->
+<!-- From: file:/mnt/Data/AndroidStudio_WS/BirdCoach/app/src/main/res/layout/activity_main.xml -->

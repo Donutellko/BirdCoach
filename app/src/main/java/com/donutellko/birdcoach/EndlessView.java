@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import static android.graphics.Bitmap.createBitmap;
+
 
 public class EndlessView extends View {
 
@@ -20,7 +22,7 @@ public class EndlessView extends View {
     // подсчёт очков:
     public int time = 0, level = 1, scores = 0;
 
-    Bitmap[] birdImg = new Bitmap[9];   //
+    Bitmap[][] birdImg = new Bitmap[9][4];   //
     int[][] position = new int[20][2];   // список координат, по которым будут раскиданы птицы. [][0] - X, [][1] - Y
 
     int[] order = new int[1];
@@ -29,6 +31,27 @@ public class EndlessView extends View {
 
     public EndlessView(Context context) {
         super(context);
+
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+
+        super.onSizeChanged(w, h, oldw, oldh);
+        loadImgs();
+
+    }
+
+    private void loadImgs() { // Загрузка ресурсов отображения птиц
+        Bitmap birdsImg = BitmapFactory.decodeResource(getResources(),R.drawable.birds); //Изображение со всеми цветами птиц и их позами.
+        for (int i = 0; i < birdImg.length; i++) {
+            // размер изображений 335 x 248
+            birdImg[i][0] = createBitmap(birdsImg, i * (335 + 2), 2, 335, 248); // Поза 1
+            birdImg[i][1] = createBitmap(birdsImg, i * (335 + 2), 2 * (2 + 248), 335, 248); // Поза 2
+            birdImg[i][2] = createBitmap(birdsImg, i * (335 + 2), 3 * (2 + 248), 335, 248); // Поза 3
+            birdImg[i][3] = createBitmap(birdsImg, i * (335 + 2), 4 * (2 + 248), 335, 248); // Поза 4
+            birdImg[i][4] = createBitmap(birdsImg, i * (335 + 2), 5 * (2 + 248), 335, 248); // Поза 5
+        }
 
     }
 
@@ -101,7 +124,7 @@ public class EndlessView extends View {
         order = generateMelody(count);
         // отобразить птиц
         for (int i = 0; i < count; i++) {
-            birds.add(new Birds(position[i][0], position[i][1], birdImg[order[i]], h / 15));
+            birds.add(new Birds(position[i][0], position[i][1], birdImg[order[i]][1], h / 15));
         }
         // запустить секундомер
 

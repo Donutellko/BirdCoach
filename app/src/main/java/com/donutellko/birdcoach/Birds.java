@@ -1,13 +1,13 @@
+/**
+ * Created by donat on 2/22/16.
+ */
+
 package com.donutellko.birdcoach;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
-/**
- * Created by donat on 2/22/16.
- */
 
 public class Birds {
     private static final Paint paint = new Paint();
