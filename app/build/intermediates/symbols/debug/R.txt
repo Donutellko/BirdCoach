@@ -441,10 +441,9 @@ int drawable abc_textfield_default_mtrl_alpha 0x7f020041
 int drawable abc_textfield_search_activated_mtrl_alpha 0x7f020042
 int drawable abc_textfield_search_default_mtrl_alpha 0x7f020043
 int drawable abc_textfield_search_material 0x7f020044
-int drawable bg 0x7f020045
-int drawable bg_wire 0x7f020046
-int drawable birds 0x7f020047
-int drawable notification_template_icon_bg 0x7f020048
+int drawable back 0x7f020045
+int drawable birds 0x7f020046
+int drawable notification_template_icon_bg 0x7f020047
 int id action0 0x7f0c0051
 int id action_bar 0x7f0c0041
 int id action_bar_activity_content 0x7f0c0000

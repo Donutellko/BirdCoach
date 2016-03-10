@@ -17,124 +17,76 @@ import static android.graphics.Bitmap.createBitmap;
 
 public class EndlessView extends View {
 
+    public static int birdSize = 100;
     // ширина и высота экрана
-    public int w, h;
-    // подсчёт очков:
-    public int time = 0, level = 1, scores = 0;
+    public int Width, Height;
+    private Birds activeBird;
+    float deltaX, deltaY;
+    Paint paint = new Paint();
+    Bitmap bg;
+    static Bitmap birdsBitmap;
 
-    Bitmap[][] birdImg = new Bitmap[9][4];   //
-    int[][] position = new int[20][2];   // список координат, по которым будут раскиданы птицы. [][0] - X, [][1] - Y
-
-    int[] order = new int[1];
-
-    private List<Birds> birds = new LinkedList<Birds>();
+    public static List<Birds> birds = new LinkedList<>();
 
     public EndlessView(Context context) {
         super(context);
+        birdsBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.birds);
+        // for (int i = 1; i < 10; i++) birds.add(new Birds(100 * i, 200, i));
 
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-
         super.onSizeChanged(w, h, oldw, oldh);
-        loadImgs();
 
-    }
+        Width = getWidth();
+        Height = getHeight();
 
-    private void loadImgs() { // Загрузка ресурсов отображения птиц
-        Bitmap birdsImg = BitmapFactory.decodeResource(getResources(),R.drawable.birds); //Изображение со всеми цветами птиц и их позами.
-        for (int i = 0; i < birdImg.length; i++) {
-            // размер изображений 335 x 248
-            birdImg[i][0] = createBitmap(birdsImg, i * (335 + 2), 2, 335, 248); // Поза 1
-            birdImg[i][1] = createBitmap(birdsImg, i * (335 + 2), 2 * (2 + 248), 335, 248); // Поза 2
-            birdImg[i][2] = createBitmap(birdsImg, i * (335 + 2), 3 * (2 + 248), 335, 248); // Поза 3
-            birdImg[i][3] = createBitmap(birdsImg, i * (335 + 2), 4 * (2 + 248), 335, 248); // Поза 4
-            birdImg[i][4] = createBitmap(birdsImg, i * (335 + 2), 5 * (2 + 248), 335, 248); // Поза 5
-        }
-
+        bg = BitmapFactory.decodeResource(getResources(), R.drawable.back);
+        bg = Bitmap.createScaledBitmap(bg, Width, Height, false);
     }
 
     protected void onDraw(Canvas canvas) {
-        w = getWidth();
-        h = getHeight();
-
-        // отобразить фон
-        drawBG(canvas);
-
-        // отобразить птиц
+        // Отобазить фон:
+        canvas.drawBitmap(bg, 0, 0, paint);
+        // Отобразить птиц:
         for (Birds b : birds) {
-            b.draw(canvas);
+            b.drawBird(canvas);
         }
+        // Отобразить номер уровня, количество очков и жизней!
 
         invalidate();
-
-    }
-
-    public void drawBG(Canvas canvas) {
-        Paint paint = new Paint();
-
-        // загружаем элементы фона
-        Bitmap bg = BitmapFactory.decodeResource(getResources(), R.drawable.bg);    // фон
-        Bitmap bg_wire = BitmapFactory.decodeResource(getResources(), R.drawable.bg_wire); // столб и провод
-
-        // масштабируем их под размер экрана
-        bg = Bitmap.createScaledBitmap(bg, w, h, false);
-        bg_wire = Bitmap.createScaledBitmap(bg_wire, w, h, false);
-
-        // отображаем фон
-        canvas.drawBitmap(bg, 0, 0, paint);
-        canvas.drawBitmap(bg_wire, 0, 0, paint);
-
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-
-        if (event.getAction() == MotionEvent.ACTION_DOWN)
-            if (level == 0) {
-                level = 1;
-                // скрыть приветствие.
-
-                // запустить первый уровень.
-                startLevel(1);
-            } else {    // если прикоснулись к птице
-                for (Birds b : birds) {
-                    // if (getX() >= b.x)
-                }
-            }
-
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                // определяем, к какой птице прикоснулись
-            for (Birds b : birds) {
-                if (getX() > b.x && getX() < b.x + b.size && getY() > b.y && getY() < b.y + b.size) {
-
-                }
-            }
-                // меняем её координаты
-
+        // Если игра не начата, начать игру:
+        if (Level.level == 0) {
+            Level.newGame();
+            return true;
         }
 
+        float x = event.getX();
+        float y = event.getY();
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (Birds b : birds)
+                    if (x > b.x && x < (b.x + b.size) && y > b.y && y < (b.y + b.size)) {
+                        deltaX = b.x - x;
+                        deltaY = b.y - y;
+                        activeBird = b;
+                    }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (activeBird != null) {
+                    activeBird.x = x + deltaX;
+                    activeBird.y = y + deltaY;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                activeBird = null;
+                break;
+        }
         return true;
-    }
-
-    private void startLevel(int level) {
-        // сгенерировать новый уровень
-        int count = 4 + level / 4;
-
-        order = generateMelody(count);
-        // отобразить птиц
-        for (int i = 0; i < count; i++) {
-            birds.add(new Birds(position[i][0], position[i][1], birdImg[order[i]][1], h / 15));
-        }
-        // запустить секундомер
-
-    }
-
-    private int[] generateMelody(int count) {
-        int order[] = new int[count];
-        Random random = new Random();
-        for (int i = 0; i < count; i++)
-            order[i] = (random.nextInt(6) + 1);
-        return order;
     }
 }
