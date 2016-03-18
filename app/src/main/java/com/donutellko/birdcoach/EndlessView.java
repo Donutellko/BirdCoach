@@ -5,34 +5,49 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.View;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import static android.graphics.Bitmap.createBitmap;
 
 
 public class EndlessView extends View {
 
-    public static int birdSize = 100;
-    // ширина и высота экрана
+// NUMBERS, COORDINATES AND SIZES:
     public int Width, Height;
-    private Birds activeBird;
-    float deltaX, deltaY;
+    float deltaX, deltaY, startX, startY;
+    static int birdSize = 100;
+    boolean moved = false;
+// Images:
+    static Bitmap birdsBitmap;
     Paint paint = new Paint();
     Bitmap bg;
-    static Bitmap birdsBitmap;
+// SOUNDS:
+    static SoundPool soundPool;
+    static int birdsSound;
+        //static MediaPlayer mPlayer;
+// OBJECTS:
+    private Birds activeBird;
+    static List<Birds> birds = new LinkedList<>();
+    Context context;
 
-    public static List<Birds> birds = new LinkedList<>();
 
     public EndlessView(Context context) {
         super(context);
         birdsBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.birds);
-        // for (int i = 1; i < 10; i++) birds.add(new Birds(100 * i, 200, i));
 
+        /* MediaPlayer
+        this.context = context;
+        mPlayer =
+        */
+
+        /* SoundPool: */
+        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        birdsSound = soundPool.load(context, R.raw.sound1, 1);
     }
 
     @Override
@@ -47,12 +62,10 @@ public class EndlessView extends View {
     }
 
     protected void onDraw(Canvas canvas) {
-        // Отобазить фон:
+        // ФОН:
         canvas.drawBitmap(bg, 0, 0, paint);
-        // Отобразить птиц:
-        for (Birds b : birds) {
-            b.drawBird(canvas);
-        }
+        // ПТИЦЫ:
+        for (Birds b : birds) b.drawBird(canvas);
         // Отобразить номер уровня, количество очков и жизней!
 
         invalidate();
@@ -60,30 +73,25 @@ public class EndlessView extends View {
 
     public boolean onTouchEvent(MotionEvent event) {
         // Если игра не начата, начать игру:
-        if (Level.level == 0) {
-            Level.newGame();
-            return true;
-        }
+        if (Level.level == 0) { Level.newGame();  return true; }
 
-        float x = event.getX();
-        float y = event.getY();
+        float x = event.getX(), y = event.getY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 for (Birds b : birds)
                     if (x > b.x && x < (b.x + b.size) && y > b.y && y < (b.y + b.size)) {
-                        deltaX = b.x - x;
-                        deltaY = b.y - y;
+                        deltaX = b.x - x; deltaY = b.y - y;
                         activeBird = b;
                     }
+                startX = x; startY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (activeBird != null) {
-                    activeBird.x = x + deltaX;
-                    activeBird.y = y + deltaY;
-                }
+                if (activeBird != null) { activeBird.x = x + deltaX; activeBird.y = y + deltaY; }
                 break;
             case MotionEvent.ACTION_UP:
+                if (Math.abs(x - startX) < 5 && Math.abs(y - startY) < 5 && activeBird != null) activeBird.sound(context);
+                if (activeBird != null) Level.checkPlace(activeBird);
                 activeBird = null;
                 break;
         }

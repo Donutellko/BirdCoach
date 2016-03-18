@@ -53,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
     public void cPlayEndless(View view) {
         Intent intent = new Intent(MainActivity.this, EndlessActivity.class);
         startActivity(intent);

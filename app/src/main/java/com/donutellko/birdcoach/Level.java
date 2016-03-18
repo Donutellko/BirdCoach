@@ -14,6 +14,12 @@ public class Level {
     static int lives = 3;  // Количество оставшихся жизней игрока.
     static int[] melodyOrder = new int[1];
 
+    static int[] wirePlaceX = new int[12];
+    static int[] wirePlaceY = {900, 750, 830, 870, 935, 820, 947, 820, 947, 710, 910, 815, 935, 835};
+    // static int[] bushPlaceX = new int[12];
+    // static int[] bushPlaceY = new int[12];
+    static Birds[] birdPlaced;
+
     public static void nextLevel() {
         level++;
         time = 0;
@@ -41,6 +47,23 @@ public class Level {
             EndlessView.birds.remove(b);
         for (int i = 0; i < order.length; i++) {
             EndlessView.birds.add(new Birds(200 + 120 * i, (float) (500 + Math.sin(random.nextInt(100)) * 90), order[i]));
+        }
+
+        for (int i = 0; i < 12; i++) wirePlaceX[i] = (int) (400 + EndlessView.birdSize * 1.2 * i);
+    }
+
+    public static void checkPlace(Birds b) {
+        int a = 200;
+        int s = EndlessView.birdSize;
+        for (int i = 0; i < 12; i++) {
+            if (b.x + s + a > wirePlaceX[i] && b.y + s + a > wirePlaceY[i] && b.x - a < wirePlaceX[i] && b.y - a < wirePlaceY[i] && birdPlaced[i] == null) {
+                birdPlaced[i] = b;
+                // b.x = wirePlaceX[i];
+                // b.y = wirePlaceY[i];
+                b.x = 0; // временно, чтобы видеть, что что-то происходит
+                b.y = 0;
+
+            }
         }
     }
 
