@@ -12,5 +12,4 @@ public class EndlessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(new EndlessView(this));  // Вся деят-ть активности в EndlessView.
     }
-
 }

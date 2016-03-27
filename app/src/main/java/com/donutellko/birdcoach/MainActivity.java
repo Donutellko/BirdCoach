@@ -1,11 +1,10 @@
 package com.donutellko.birdcoach;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
-/*
+/**
    Индивидуальный проект Шергалиса Доната (donutellko@gmail.com).
    Info: Игра BirdCoach ("Птичий тренер"), призвана развивать у детей музыкальный слух в игровой форме.
    Основная информация находится в файле BirdCoach.pdf
@@ -33,35 +32,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * Главное активити.
-     * Здесь распологаются:
-     * 1) Кнопка выбора режима игры    -
-     * 2) Кнопка "Настройки"           -
-     * 3) Кнопка "Как играть?"         - HowToPlayActivity
-     */
-
-    /*
-        Используемые названия:
-            bPlay - кнопка вызова меню выбора режима игры
-    */
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
+       super.onCreate(savedInstanceState);
+       setContentView(new MainView(this));
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    public void cPlayEndless(View view) {
-        Intent intent = new Intent(MainActivity.this, EndlessActivity.class);
-        startActivity(intent);
-    }
-
 }
