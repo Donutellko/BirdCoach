@@ -11,7 +11,7 @@ import android.media.SoundPool;
 
 import static android.graphics.Bitmap.createBitmap;
 
-public class mResources {
+public class mResources extends Thread {
 	static Context context;
 
 	static Paint paint = new Paint();
@@ -27,17 +27,14 @@ public class mResources {
 	static Bitmap[][] birdBitmaps = new Bitmap[EndlessView.BIRDS_BITMAP_COLUMNS][EndlessView.BIRDS_BITMAP_STRINGS];
 
 	public static void loadResources() {
-		if (context != null) context = EndlessView.context;
-		else context = MainView.context;
+		if (context == null) context = MainView.context;
 
 		loadBackgrounds();
 		loadText();
-		if (EndlessView.context != null) {
-			loadBirds();
-			loadBitmaps();
-			loadSounds();
-			loadDialogs();
-		}
+		loadBirds();
+		loadBitmaps();
+		loadSounds();
+		loadDialogs();
 	}
 
 	private static void loadBitmaps() {
@@ -70,11 +67,17 @@ public class mResources {
 
 	public static void loadBackgrounds() {
 		if (context == null) context = MainView.context;
-		if (bg == null) bg = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bg), MainView.Width, MainView.Height, false);
-		if (josh == null) josh = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.josh), MainView.Height * 137 / 108, MainView.Height, false);
-		if (tree == null) tree = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.tree), MainView.Width, MainView.Width * 11 / 16, false);
-		if (wire == null) wire = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.wire), MainView.Width, MainView.Height, false);
-		if (clouds == null) clouds= Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width * 2, MainView.Width * 7 / 40, false);
+
+		if (bg == null)
+			bg = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bg), MainView.Width, MainView.Height, false);
+		if (josh == null)
+			josh = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.josh), MainView.Height * 137 / 108, MainView.Height, false);
+		if (tree == null)
+			tree = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.tree), MainView.Width, MainView.Width * 11 / 16, false);
+		if (wire == null)
+			wire = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.wire), MainView.Width, MainView.Height, false);
+		if (clouds == null)
+			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width * 2, MainView.Width * 7 / 40, false);
 	}
 
 	public static void loadBirds() {
@@ -102,5 +105,10 @@ public class mResources {
 		birdSounds[6] = sounds.load(context, R.raw.s2b, 1);
 		birdSounds[7] = sounds.load(context, R.raw.s2c, 1);
 		birdSounds[8] = sounds.load(context, R.raw.s2d, 1);
+	}
+
+	@Override
+	public void run() {
+		loadResources();
 	}
 }

@@ -20,6 +20,9 @@ public class EndlessView extends View {
 	float deltaX, deltaY, startX, startY;
 
 	// OBJECTS:
+	public static Level LevelThread;
+	public static mResources ResThread;
+
 	private Birds activeBird;
 	static List<Birds> birds = new LinkedList<>();
 	static Context context;
@@ -28,6 +31,7 @@ public class EndlessView extends View {
 	public EndlessView(Context context) {
 		super(context);
 		EndlessView.context = context;
+		LevelThread = new Level();
 	}
 
 	@Override
@@ -40,12 +44,14 @@ public class EndlessView extends View {
 		BIRDS_HEIGHT = MainView.Height / 7;
 		BIRDS_WIDTH = BIRDS_HEIGHT * 248 / 335;
 
-		mResources.loadResources();
-		if (Level.level == 0) Level.newGame();
+		ResThread = new mResources();
+		ResThread.start();
 
+		if (Level.level == 0) Level.newGame();
 	}
 
 	protected void onDraw(Canvas canvas) {
+
 		if (Level.timeBool) Level.time++;
 
 		mResources.loadBackgrounds();
@@ -89,8 +95,9 @@ public class EndlessView extends View {
 						deltaX = b.x - x;
 						deltaY = b.y - y;
 						activeBird = b;
-					} else if (x < 100 && y < 100) Level.playMelody(Level.melodyOrder);
-					else if ((x - MainView.Width / 2) * (x - MainView.Width / 2) + (y - MainView.Height / 20) * (y - MainView.Height / 2) < (BIRDS_WIDTH / 4) * (BIRDS_WIDTH / 4)) Level.checkMelody();
+					}
+					if (x < 100 && y < 100) Level.playMelody(Level.melodyOrder);
+					else if ((x - MainView.Width / 2) * (x - MainView.Width / 2) + (y - MainView.Height / 20) * (y - MainView.Height / 2) < (BIRDS_WIDTH / 4) * (BIRDS_WIDTH / 4)) LevelThread.run();
 				startX = x;
 				startY = y;
 				break;

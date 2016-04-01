@@ -10,14 +10,17 @@ import android.view.View;
 public class MainView extends View {
 
 	public static Context context;
+	public static mResources ResThread;
 	public static int Width, Height;
-	float bgX = 0, treeX = 0, treeY = 0;
+	float bgX = 0, treeX = 0, treeY = 0, cloudsX = 0;
 	float treeYspeed = 0, treeXspeed = 0, bgXspeed = 0.2f;
+	boolean res_loaded = false;
 
 	public MainView(Context context) {
 		super(context);
 		MainView.context = context;
 
+		ResThread = new mResources();
 	}
 
 	@Override
@@ -26,19 +29,26 @@ public class MainView extends View {
 
 		Width = getWidth();
 		Height = getHeight();
+
 	}
 
 	protected void onDraw(Canvas canvas) {
-		mResources.loadBackgrounds();
 
+		if (ResThread != null && !res_loaded) {
+			ResThread.run();
+			res_loaded = true;
+		}
+
+		if (cloudsX == 0) cloudsX -= MainView.Width;
+		cloudsX++;
 		//if (Width <= bgX + Height * 2 && bgX <= 0) bgX -= bgXspeed;
 		//else { bgXspeed = - bgXspeed; bgX -= 2 * bgXspeed; }
-
-		canvas.drawBitmap(mResources.bg, bgX, 0, mResources.paint);
 
 		if (Height < MainView.Width * 11 / 16 + treeY) treeY -= treeYspeed;
 		treeX -= treeXspeed;
 
+		canvas.drawBitmap(mResources.bg, bgX, 0, mResources.paint);
+		canvas.drawBitmap(mResources.clouds, cloudsX, 0, mResources.paint);
 		canvas.drawBitmap(mResources.tree, treeX, treeY, mResources.paint);
 
 		if (treeX + Width < 0){

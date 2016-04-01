@@ -9,19 +9,23 @@ import java.util.Random;
  */
 
 
-public class Level {
+public class Level extends Thread{
 	static int level = 0, score = 0, time = 0, lifes = 3;  // Количество оставшихся жизней игрока.
 	static int[] melodyOrder = new int[1];
 	static boolean timeBool = false;
 
 	static Birds[] birdPlaced = new Birds[9];
 
-	static double[] wirePlaceX = {0.104, 0.014, 0.200, 0.296, 0.394, 0.490, 0.579, 0.676, 0.779};
-	static double[] wirePlaceY = {0.206, 0.182, 0.211, 0.214, 0.210, 0.204, 0.198, 0.177, 0.156};
+	static double[] wirePlaceX = {0.014, 0.104, 0.200, 0.296, 0.394, 0.490, 0.579, 0.676, 0.779};
+	static double[] wirePlaceY = {0.177, 0.192, 0.206, 0.209, 0.205, 0.200, 0.193, 0.172, 0.156};
 
 	static double[] bushPlaceX = {0.134, 0.176, 0.196, 0.215, 0.281, 0.287, 0.329, 0.380, 0.396, 0.435, 0.472, 0.540};
-	static double[] bushPlaceY = {0.772, 0.565, 0.696, 0.819, 0.617, 0.735, 0.860, 0.745, 0.587, 0.819, 0.662, 0.769};
+	static double[] bushPlaceY = {0.767, 0.560, 0.691, 0.814, 0.612, 0.730, 0.855, 0.740, 0.582, 0.814, 0.657, 0.764};
 
+	@Override
+	public void run() {
+		checkMelody();
+	}
 
 	public static void newGame() {
 		AlertDialog alert = mResources.builder.create();
@@ -50,7 +54,6 @@ public class Level {
 		playMelody(melodyOrder);
 	}
 
-
 	public static void createBirds(int[] order) {
 		Random random = new Random();
 		for (Birds b : EndlessView.birds) EndlessView.birds.remove(b);
@@ -74,7 +77,6 @@ public class Level {
 			} else if (b == birdPlaced[i]) birdPlaced[i] = null;
 		}
 	}
-
 
 	private static int[] generateMelody(int count) {
 		int[] order = new int[count];
