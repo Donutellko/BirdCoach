@@ -5,22 +5,22 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 /**
-   Индивидуальный проект Шергалиса Доната (donutellko@gmail.com).
-   Info: Игра BirdCoach ("Птичий тренер"), призвана развивать у детей музыкальный слух в игровой форме.
-   Основная информация находится в файле BirdCoach.pdf
-
-   Условные обозначения в комментариях:
-       _ : временное решение
-       - : не выполненная задача
-       + : выполненная задача
-       : проблемный участок
-       . : задача выполнена и работает, как надо.
-        <p/>
-   Префиксы:
-       b : кнопка
-       c : onClick method
-       t : временная переменная
-       e : EditText
+ * Индивидуальный проект Шергалиса Доната (donutellko@gmail.com).
+ * Info: Игра BirdCoach ("Птичий тренер"), призвана развивать у детей музыкальный слух в игровой форме.
+ * Основная информация находится в файле BirdCoach.pdf
+ * <p/>
+ * Условные обозначения в комментариях:
+ * _ : временное решение
+ * - : не выполненная задача
+ * + : выполненная задача
+ * : проблемный участок
+ * . : задача выполнена и работает, как надо.
+ * <p/>
+ * Префиксы:
+ * b : кнопка
+ * c : onClick method
+ * t : временная переменная
+ * e : EditText
  */
 
 /*
@@ -32,10 +32,22 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
-       setContentView(new MainView(this));
-    }
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(new MainView(this));
+	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (MainView.mediaPlayer.isPlaying()) MainView.mediaPlayer.pause();
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (MainView.mediaPlayer != null)
+			if (!MainView.mediaPlayer.isPlaying())
+				MainView.mediaPlayer.pause();
+	}
 }

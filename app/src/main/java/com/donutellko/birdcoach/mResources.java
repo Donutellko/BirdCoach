@@ -18,13 +18,13 @@ public class mResources extends Thread {
 	static Paint textScores = new Paint();
 	static Paint textTime = new Paint();
 
-	static AlertDialog.Builder builder = new AlertDialog.Builder(MainView.context);
 	public static SoundPool sounds;
-	public static int[] birdSounds = new int[EndlessView.BIRDS_BITMAP_COLUMNS];
+	public static int[] birdSounds = new int[MainView.BIRDS_BITMAP_COLUMNS];
+	public static int mistakeSound;
 	static Bitmap
-			  bg, clouds, wire, tree, josh,
-			  lifesBitmaps, birdsBitmap;
-	static Bitmap[][] birdBitmaps = new Bitmap[EndlessView.BIRDS_BITMAP_COLUMNS][EndlessView.BIRDS_BITMAP_STRINGS];
+			  back, clouds, wire, josh, scr1, scr2, lalka, victory,
+			  lifesBitmaps, birdsBitmap, mfBitmap, fantom;
+	static Bitmap[][] birdBitmaps = new Bitmap[MainView.BIRDS_BITMAP_COLUMNS][MainView.BIRDS_BITMAP_STRINGS];
 
 	public static void loadResources() {
 		if (context == null) context = MainView.context;
@@ -34,25 +34,15 @@ public class mResources extends Thread {
 		loadBirds();
 		loadBitmaps();
 		loadSounds();
-		loadDialogs();
 	}
 
 	private static void loadBitmaps() {
 		if (lifesBitmaps == null)
-			lifesBitmaps = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher), EndlessView.BIRDS_HEIGHT / 2, EndlessView.BIRDS_HEIGHT / 2, false);
-	}
-
-	private static void loadDialogs() {
-		builder.setTitle("Новая игра")
-				  .setMessage("Первый уровень, 5 птиц.")
-				  .setIcon(R.mipmap.ic_launcher)
-				  .setCancelable(false)
-				  .setNegativeButton("Начать",
-							 new DialogInterface.OnClickListener() {
-								 public void onClick(DialogInterface dialog, int id) {
-									 dialog.cancel();
-								 }
-							 });
+			lifesBitmaps = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher), MainView.BIRDS_HEIGHT / 2, MainView.BIRDS_HEIGHT / 2, false);
+		if (mfBitmap == null)
+			mfBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.megafon), MainView.BIRDS_HEIGHT * 2, MainView.BIRDS_HEIGHT * 2, false);
+		if (fantom == null)
+			fantom = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.fantom), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
 	}
 
 	private static void loadText() {
@@ -68,34 +58,38 @@ public class mResources extends Thread {
 	public static void loadBackgrounds() {
 		if (context == null) context = MainView.context;
 
-		if (bg == null)
-			bg = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bg), MainView.Width, MainView.Height, false);
+		if (back == null)
+			back = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.back), MainView.Width, MainView.Height, false);
 		if (josh == null)
-			josh = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.josh), MainView.Height * 137 / 108, MainView.Height, false);
-		if (tree == null)
-			tree = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.tree), MainView.Width, MainView.Width * 11 / 16, false);
+			josh = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.josh), MainView.Width, MainView.Height, false);
 		if (wire == null)
 			wire = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.wire), MainView.Width, MainView.Height, false);
 		if (clouds == null)
-			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width * 2, MainView.Width * 7 / 40, false);
+			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width, MainView.Height, false);
+		if (scr1 == null)
+			scr1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1), MainView.Width, MainView.Height, false);
+		if (scr2 == null)
+			scr2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2), MainView.Width, MainView.Height, false);
+		if (lalka == null)
+			lalka = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.lalka), MainView.Width, MainView.Height, false);
+		if (victory == null)
+			victory = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.victory), MainView.Width, MainView.Height, false);
 	}
 
 	public static void loadBirds() {
 		if (birdsBitmap == null)
 			birdsBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.birds);
-		for (int type = 0; type < EndlessView.BIRDS_BITMAP_COLUMNS; type++) {
-			for (int pose = 0; pose < EndlessView.BIRDS_BITMAP_STRINGS; pose++) {
+		for (int type = 0; type < MainView.BIRDS_BITMAP_COLUMNS; type++) {
+			for (int pose = 0; pose < MainView.BIRDS_BITMAP_STRINGS; pose++) {
 				if (birdBitmaps[type][pose] == null)
-					birdBitmaps[type][pose] = Bitmap.createScaledBitmap(createBitmap(birdsBitmap,
-										 5 + type * 673, pose * 494 + 5,                                     // X, Y on birdsBitmap
-										 670, 494),                                                          // Height, Width from birdsBitmap
-							  EndlessView.BIRDS_HEIGHT, EndlessView.BIRDS_WIDTH, false);          // Height, Width for result
+					birdBitmaps[type][pose] = Bitmap.createScaledBitmap(createBitmap(birdsBitmap, 5 + type * 673, pose * 494 + 5, 670, 494), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
 			}
 		}
 	}
 
 	public static void loadSounds() {
 		sounds = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+		mistakeSound = sounds.load(context, R.raw.mistake, 1);
 		birdSounds[0] = sounds.load(context, R.raw.s1c, 1);
 		birdSounds[1] = sounds.load(context, R.raw.s1d, 1);
 		birdSounds[2] = sounds.load(context, R.raw.s1e, 1);
