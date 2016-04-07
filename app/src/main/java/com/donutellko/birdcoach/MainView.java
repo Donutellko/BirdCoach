@@ -2,13 +2,22 @@ package com.donutellko.birdcoach;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Chronometer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+
+import static android.graphics.Bitmap.createBitmap;
 
 
 public class MainView extends View {
@@ -24,7 +33,7 @@ public class MainView extends View {
 	public static int Width, Height;
 	static float allX = 0, allXspeed = 0;
 	float deltaX, deltaY, startX, startY;
-	float cloudsX = 0, cloudsXspeed = -1, mfY = 0;
+	float cloudsX = 0, cloudsXspeed = -1;
 	public static String state = "Main", stateL;
 
 	public static final int
@@ -40,7 +49,7 @@ public class MainView extends View {
 		MainView.context = context;
 
 		ResThread = new mResources();
-		LevelThread = new Level();
+		LevelThread = new Level(this, "LevelThread");
 	}
 
 	@Override
@@ -52,8 +61,8 @@ public class MainView extends View {
 			mediaPlayer.setLooping(true);
 		}
 
-		if (!mediaPlayer.isPlaying())
-				mediaPlayer.start();
+		//if (!mediaPlayer.isPlaying() && Width != 0)
+		//		mediaPlayer.start();
 
 		if (getWidth() > getHeight()) {
 			Width = getWidth();
@@ -66,8 +75,7 @@ public class MainView extends View {
 		BIRDS_HEIGHT = MainView.Height / 7;
 		BIRDS_WIDTH = BIRDS_HEIGHT * 248 / 335;
 
-		ResThread = new mResources();
-		ResThread.start();
+		ResThread.run();
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -93,7 +101,7 @@ public class MainView extends View {
 		}
 
 		if (state.equals("Game") && mediaPlayer.isPlaying()) mediaPlayer.pause();
-		if (!state.equals("Game") && !mediaPlayer.isPlaying()) mediaPlayer.start();
+		if (!state.equals("Game") && !mediaPlayer.isPlaying() && Width != 0) mediaPlayer.start();
 
 		if (state.equals("Main") || state.equals("Menu") || state.equals("Game") || state.equals("Level")) {
 			canvas.drawBitmap(mResources.back, 0, 0, mResources.paint);
@@ -131,7 +139,7 @@ public class MainView extends View {
 			canvas.drawBitmap(mResources.josh, allX, 0, mResources.paint);
 
 		if (state.equals("Level"))
-			if (stateL.equals("Victory")) canvas.drawBitmap(mResources.victory, 0, 0, mResources.paint);
+			if (stateL.equals("Victory"))	canvas.drawBitmap(mResources.victory, 					-5					, 0, mResources.paint);
 			else if (stateL.equals("Loose")) canvas.drawBitmap(mResources.lalka, 0, 0, mResources.paint);
 		if (state.equals("Game+Level"))
 			if (stateL.equals("Victory")) canvas.drawBitmap(mResources.victory, allX + Width, 0, mResources.paint);
@@ -146,17 +154,14 @@ public class MainView extends View {
 			for (Birds b : birds) b.drawBird(canvas);
 
 		if (state.equals("Game")) {
-			if (Level.timeBool) Level.time++;
-
 			String TS = "Time: " + Level.time / 60 + ":";
-			if (Level.time % 60 < 10) TS += "0" + Level.time % 60;
-			else TS += Level.time % 60;
+			TS += (Level.time % 60 < 10) ? "0" + Level.time % 60 : Level.time % 60;
 
-			canvas.drawText("Scores: " + Level.score, MainView.Width * 7 / 8, MainView.Height / 30, mResources.textScores);
-			canvas.drawText(TS, 30, MainView.Height / 30, mResources.textTime);
+			canvas.drawText("Scores: " + Level.score, MainView.Height / 30 , MainView.Height / 30, mResources.textScores);
+			canvas.drawText(TS, MainView.Width * 7 / 8, MainView.Height / 30, mResources.textTime);
 
-			for (int i = 0; i < Level.lifes; i++)
-				canvas.drawBitmap(mResources.lifesBitmaps, 30 + BIRDS_HEIGHT * i * 2 / 3, MainView.Height / 20, mResources.paint);
+			for (int i = 0; i < Level.lifes; i++) canvas.drawBitmap(mResources.lifesBitmaps, 30 + BIRDS_HEIGHT * i * 2 / 3, MainView.Height / 20, mResources.paint);
+
 			canvas.drawBitmap(mResources.lifesBitmaps, MainView.Width / 2 - BIRDS_WIDTH / 4, MainView.Height / 20, mResources.paint);
 			canvas.drawBitmap(mResources.mfBitmap, Width - 4 * BIRDS_WIDTH, Height * 8 / 11, mResources.paint);
 
@@ -188,9 +193,8 @@ public class MainView extends View {
 							deltaY = b.y - y;
 							activeBird = b;
 						}
-					// if (x < 100 && y < 100) Level.playMelody(Level.melodyOrder); else
-						if (x > Width / 2 - BIRDS_WIDTH / 2 && x < Width / 2 + BIRDS_WIDTH / 2 && y < BIRDS_HEIGHT)
-						LevelThread.run();
+					if (x > Width / 2 - BIRDS_WIDTH / 2 && x < Width / 2 + BIRDS_WIDTH / 2 && y < BIRDS_HEIGHT)
+						LevelThread.start();
 					startX = x;
 					startY = y;
 					if (x > Width - 3 * BIRDS_HEIGHT && y > Height * 8 / 11)
@@ -225,3 +229,4 @@ public class MainView extends View {
 		return true;
 	}
 }
+

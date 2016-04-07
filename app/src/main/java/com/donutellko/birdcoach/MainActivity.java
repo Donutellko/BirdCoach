@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (MainView.mediaPlayer.isPlaying()) MainView.mediaPlayer.pause();
+		if (MainView.mediaPlayer != null)
+			if (MainView.mediaPlayer.isPlaying()) MainView.mediaPlayer.pause();
 	}
 
 	@Override

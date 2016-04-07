@@ -1597,15 +1597,14 @@ containing a value of this type.
         public static final int birds=0x7f020046;
         public static final int clouds=0x7f020047;
         public static final int fantom=0x7f020048;
-        public static final int fantom1=0x7f020049;
-        public static final int josh=0x7f02004a;
-        public static final int lalka=0x7f02004b;
-        public static final int megafon=0x7f02004c;
-        public static final int notification_template_icon_bg=0x7f020051;
-        public static final int scr1=0x7f02004d;
-        public static final int scr2=0x7f02004e;
-        public static final int victory=0x7f02004f;
-        public static final int wire=0x7f020050;
+        public static final int josh=0x7f020049;
+        public static final int lalka=0x7f02004a;
+        public static final int megafon=0x7f02004b;
+        public static final int notification_template_icon_bg=0x7f020050;
+        public static final int scr1=0x7f02004c;
+        public static final int scr2=0x7f02004d;
+        public static final int victory=0x7f02004e;
+        public static final int wire=0x7f02004f;
     }
     public static final class id {
         public static final int action0=0x7f0d0050;

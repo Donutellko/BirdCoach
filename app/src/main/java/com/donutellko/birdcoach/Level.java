@@ -13,6 +13,7 @@ import java.util.Random;
 
 public class Level extends Thread {
 	static int level = 0, score = 0, time = 0, lifes = 3, howMushTimesYouCanListenTheMelody;
+	static int levels[] = {3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
 
 	static boolean timeBool = false;
 	static AlertDialog.Builder dialog = new AlertDialog.Builder(MainView.context);
@@ -26,6 +27,10 @@ public class Level extends Thread {
 	static double[] bushPlaceX = {0.134, 0.176, 0.196, 0.215, 0.281, 0.287, 0.329, 0.380, 0.396, 0.435, 0.472, 0.540};
 	static double[] bushPlaceY = {0.767, 0.560, 0.691, 0.814, 0.612, 0.730, 0.855, 0.740, 0.582, 0.814, 0.657, 0.764};
 
+	public Level(MainView mainView, String levelThread) {
+		super ("LevelThread");
+	}
+
 	@Override
 	public void run() {
 		checkMelody();
@@ -35,26 +40,31 @@ public class Level extends Thread {
 		score = 0;
 		lifes = 3;
 		level = 0;
-		nextLevelDialog("Новая игра", 4);
+		nextLevelDialog("Новая игра", levels[0], level + 1);
 		AlertDialog alert = dialog.create();
 		alert.show();
 		nextLevel();
 	}
 
 	public static void nextLevel() {
-		for (int i = 0; i < birdPlaced.length; i++) birdPlaced[i] = null;
-		if (level > 0) {
-			if (level != 0) score += level * 100 + (level * 20 - time) % (level * 100);
-		}
+
+		score += level * 100;
+		score += (time < melodyOrder.length * 100 && level != 0)? melodyOrder.length * (time - melodyOrder.length) : 0;
+
 		level++;
-		time = 0;
-		timeBool = false;
-		melodyOrder = generateMelody((level + 1) / 2 + 3);
-		howMushTimesYouCanListenTheMelody = 3;
+		int x = 9;
+		if (levels[level - 1] < 9) x = levels[level - 1];
+
+		melodyOrder = generateMelody(x);
 		createBirds(melodyOrder);
 
+		for (int i = 0; i < birdPlaced.length; i++) birdPlaced[i] = null;
+		time = 0;
+		timeBool = false;
+		howMushTimesYouCanListenTheMelody = 3;
+
 		if (level > 1) {
-			nextLevelDialog("Следующий уровень", melodyOrder.length);
+			nextLevelDialog("Следующий уровень", melodyOrder.length, level);
 			AlertDialog alert = dialog.create();
 			alert.show();
 		}
@@ -116,7 +126,6 @@ public class Level extends Thread {
 			} else {
 				Level.lifes--;
 				mResources.sounds.play(mResources.mistakeSound, 1.0f, 1.0f, 1, 0, 1.0f);
-				// mResources.sounds.play(mResources.mistakeSound, 1.0f, 1.0f, )
 				if (lifes == 0) {
 					MainView.state = "Game+Level";
 					MainView.stateL = "Loose";
@@ -127,16 +136,17 @@ public class Level extends Thread {
 	}
 
 	public static void playMelody(int[] order) {
-		if (howMushTimesYouCanListenTheMelody != 0)
-		for (int i = 0; i < order.length; i++) {
-			playBirdSound(order[i]);
-			try {
-				Thread.sleep(330);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		if (howMushTimesYouCanListenTheMelody != 0) {
+			howMushTimesYouCanListenTheMelody--;
+			for (int i = 0; i < order.length; i++) {
+				playBirdSound(order[i]);
+				try {
+					Thread.sleep(330);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		howMushTimesYouCanListenTheMelody--;
 	}
 
 	public static void playBirdSound(int type) {
@@ -145,14 +155,14 @@ public class Level extends Thread {
 		mResources.sounds.play(sound, 1.0f, 1.0f, type, 0, 1.0f);
 	}
 
-	public static void nextLevelDialog(String title, int count) {
+	public static void nextLevelDialog(String title, int count, int level) {
 		timeBool = false;
 		String s;
 		if (count % 10 <= 4 && (count > 20 || count < 10)) s = " птицы";
 		else s = " птиц";
 
 		dialog.setTitle(title)
-				  .setMessage("Уровень " + (level + 1) + "\n" + count + s)
+				  .setMessage("Уровень " + level + "\n" + count + s)
 				  .setIcon(R.mipmap.ic_launcher)
 				  .setCancelable(false)
 				  .setNegativeButton("Начать",

@@ -26,6 +26,10 @@ public class mResources extends Thread {
 			  lifesBitmaps, birdsBitmap, mfBitmap, fantom;
 	static Bitmap[][] birdBitmaps = new Bitmap[MainView.BIRDS_BITMAP_COLUMNS][MainView.BIRDS_BITMAP_STRINGS];
 
+	mResources () {
+		super("ResThread");
+	}
+
 	public static void loadResources() {
 		if (context == null) context = MainView.context;
 
@@ -70,10 +74,12 @@ public class mResources extends Thread {
 			scr1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1), MainView.Width, MainView.Height, false);
 		if (scr2 == null)
 			scr2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2), MainView.Width, MainView.Height, false);
+
 		if (lalka == null)
 			lalka = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.lalka), MainView.Width, MainView.Height, false);
 		if (victory == null)
 			victory = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.victory), MainView.Width, MainView.Height, false);
+
 	}
 
 	public static void loadBirds() {
@@ -98,7 +104,7 @@ public class mResources extends Thread {
 		birdSounds[5] = sounds.load(context, R.raw.s2a, 1);
 		birdSounds[6] = sounds.load(context, R.raw.s2b, 1);
 		birdSounds[7] = sounds.load(context, R.raw.s2c, 1);
-		birdSounds[8] = sounds.load(context, R.raw.s2d, 1);
+		birdSounds[8] = sounds.load(context, R.raw.s2e, 1);
 	}
 
 	@Override
