@@ -16,19 +16,45 @@ public class Level extends Thread {
 	static int levels[] = {3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
 
 	static boolean timeBool = false;
-	static AlertDialog.Builder dialog = new AlertDialog.Builder(MainView.context);
+	static AlertDialog.Builder levelDialog = new AlertDialog.Builder(MainView.context);
+	static AlertDialog.Builder settingsDialog = new AlertDialog.Builder(MainView.context);
+	static AlertDialog.Builder rulesDialog = new AlertDialog.Builder(MainView.context);
 
 	static int[] melodyOrder = new int[1];
 	static Birds[] birdPlaced = new Birds[9];
 
-	static double[] wirePlaceX = {0.014, 0.104, 0.200, 0.296, 0.394, 0.490, 0.579, 0.676, 0.779};
+	static Random random = new Random();
+
+	static double[] wirePlaceX = {0.104, 0.200, 0.296, 0.394, 0.490, 0.579, 0.676, 0.779};
 	static double[] wirePlaceY = {0.177, 0.192, 0.206, 0.209, 0.205, 0.200, 0.193, 0.172, 0.156};
 
 	static double[] bushPlaceX = {0.134, 0.176, 0.196, 0.215, 0.281, 0.287, 0.329, 0.380, 0.396, 0.435, 0.472, 0.540};
 	static double[] bushPlaceY = {0.767, 0.560, 0.691, 0.814, 0.612, 0.730, 0.855, 0.740, 0.582, 0.814, 0.657, 0.764};
 
+	static String comment;
+	static String[]
+			  positiveComment = {"Чудненько!", "Восхитительно!", "Да вы растёте на глазах!", "Вы воспитываете супер-певцов", "Гергиев отдыхает", "Паганини курит в сторонке", "Браво, маэстро",
+			  "Вы идеальны", "Вы зачислены в Консерваторию", "Да у вас абсолютный слух!"},
+			  negativeComment = {"Медвед топтался на ваших ушах?", "Вы играете на наших нервах", "Не мучайте птичек, почистите уши!", "Птичку... Жалко...",
+						 "Да вы просто Бетховен... Тоже глухой", "Выньте, наконец, бананы из ушей", "Сольфеджио часто прогуливали?", "Чижик-Пыжик, где ты был?"},
+			  counts = {"Трио", "Квартет", "Квинтет", "Секстет", "Септет", "Октет", "Нонет"};
+
+	/*
+	 Поздр
+	 авляю, вы зачислены в Консерват
+	 орию!
+	 "Лучший наставник для наших птичек",
+	 Медвед основательно потоптался на ваших ушах
+	 "Ах какая невезуха - абсолютно\n нету слуха",
+	 "Попробуйте ещё раз!\nИ выньте, наконец, бананы из ушей!",
+	 "Гринпис против издевательства над животными!",
+	 "Не мучайте птичек, лучше почистите уши",
+	 "Не всем дано отличить до диез от ля мажор",
+	  */
+
+
 	public Level(MainView mainView, String levelThread) {
-		super ("LevelThread");
+		super("LevelThread");
 	}
 
 	@Override
@@ -41,19 +67,15 @@ public class Level extends Thread {
 		lifes = 3;
 		level = 0;
 		nextLevelDialog("Новая игра", levels[0], level + 1);
-		AlertDialog alert = dialog.create();
-		alert.show();
 		nextLevel();
 	}
 
 	public static void nextLevel() {
-
-		score += level * 100;
-		score += (time < melodyOrder.length * 100 && level != 0)? melodyOrder.length * (time - melodyOrder.length) : 0;
-
 		level++;
 		int x = 9;
 		if (levels[level - 1] < 9) x = levels[level - 1];
+
+		mixPositions();
 
 		melodyOrder = generateMelody(x);
 		createBirds(melodyOrder);
@@ -61,13 +83,28 @@ public class Level extends Thread {
 		for (int i = 0; i < birdPlaced.length; i++) birdPlaced[i] = null;
 		time = 0;
 		timeBool = false;
-		howMushTimesYouCanListenTheMelody = 3;
+		howMushTimesYouCanListenTheMelody = melodyOrder.length;
 
 		if (level > 1) {
-			nextLevelDialog("Следующий уровень", melodyOrder.length, level);
-			AlertDialog alert = dialog.create();
-			alert.show();
+			nextLevelDialog(counts[melodyOrder.length - 3] + " птичек.", melodyOrder.length, level);
 		}
+	}
+
+	private static void mixPositions() {
+		double tmpX, tmpY;
+		for (int i = 0; i < bushPlaceX.length; i++) {
+			int r = Level.random.nextInt(bushPlaceX.length);
+
+			tmpX = bushPlaceX[i];
+			tmpY = bushPlaceY[i];
+
+			bushPlaceX[i] = bushPlaceX[r];
+			bushPlaceY[i] = bushPlaceY[r];
+
+			bushPlaceX[r] = tmpX;
+			bushPlaceY[r] = tmpY;
+		}
+
 	}
 
 	public static void createBirds(int[] order) {
@@ -95,7 +132,6 @@ public class Level extends Thread {
 
 	private static int[] generateMelody(int count) {
 		int[] order = new int[count];
-		Random random = new Random();
 		for (int i = 0; i < count; i++)
 			order[i] = (random.nextInt(9));
 		System.out.println("playMelody" + order.length);
@@ -121,9 +157,15 @@ public class Level extends Thread {
 				i++;
 			}
 			if (c == i && i == melodyOrder.length) {
+				comment = Level.positiveComment[Level.random.nextInt(Level.positiveComment.length)];
+
+				score += level * 100;
+				score += (time < melodyOrder.length * 5 && level != 0) ? melodyOrder.length * (melodyOrder.length * 5 - time) : 0;
+
 				MainView.state = "Game+Level";
 				MainView.stateL = "Victory";
 			} else {
+				comment = Level.negativeComment[Level.random.nextInt(Level.negativeComment.length)];
 				Level.lifes--;
 				mResources.sounds.play(mResources.mistakeSound, 1.0f, 1.0f, 1, 0, 1.0f);
 				if (lifes == 0) {
@@ -136,6 +178,7 @@ public class Level extends Thread {
 	}
 
 	public static void playMelody(int[] order) {
+		timeBool = true;
 		if (howMushTimesYouCanListenTheMelody != 0) {
 			howMushTimesYouCanListenTheMelody--;
 			for (int i = 0; i < order.length; i++) {
@@ -157,26 +200,28 @@ public class Level extends Thread {
 
 	public static void nextLevelDialog(String title, int count, int level) {
 		timeBool = false;
-		String s;
-		if (count % 10 <= 4 && (count > 20 || count < 10)) s = " птицы";
-		else s = " птиц";
+		String m = "";
+		m += (count <= 4) ? " птички." : " птичек";
+		String s = "";
+		if (level > 1) s = "\nУ вас уже " + score + " очков!";
 
-		dialog.setTitle(title)
-				  .setMessage("Уровень " + level + "\n" + count + s)
+		levelDialog.setTitle(title)
+				  .setMessage("Уровень " + level + "\n" + count + m + s)
 				  .setIcon(R.mipmap.ic_launcher)
 				  .setCancelable(false)
 				  .setNegativeButton("Начать",
 							 new DialogInterface.OnClickListener() {
 								 public void onClick(DialogInterface dialog, int id) {
 									 // Level.playMelody(Level.melodyOrder);
-									 Level.timeBool = true;
 									 dialog.cancel();
 								 }
 							 });
+		AlertDialog alert = levelDialog.create();
+		alert.show();
 	}
 
 	private static void mistakeDialog() {
-		dialog.setTitle("Упс!")
+		levelDialog.setTitle("Упс!")
 				  .setMessage("Кажется, ты перепутал звуки\nПрослушай мелодию заново и попробуй ещё раз!")
 				  .setIcon(R.mipmap.ic_launcher)
 				  .setCancelable(false)
@@ -188,5 +233,51 @@ public class Level extends Thread {
 									 dialog.cancel();
 								 }
 							 });
+	}
+
+	public static void rulesDialog() {
+		rulesDialog.setTitle("Правила")
+				  .setMessage("Правила игры: \n" +
+							 "• Ваша задача — рассадить птичек на проводе в соответствии с мелодией, которую можно услышать, нажав на мегафон в правом нижнем углу экрана. С каждым последующим уровнем длина мелодии увеличивается. \n" +
+							 "• У вас есть три жизни на одну игру (право на ошибку). Оставшиеся жизни отображаются в верхнем углу экрана. \n" +
+							 "• На каждом уровне мелодию можно прослушать столько раз, сколько птичек нужно рассадить. \n" +
+							 "• За каждый уровень вы набираете очки (верхний правый угол), зависящие от количества прослушиваний и времени, затраченного на этот уровень (верхний левый угол).")
+				  .setIcon(R.mipmap.ic_launcher)
+				  .setCancelable(true)
+				  .setPositiveButton("Усвоил",
+							 new DialogInterface.OnClickListener() {
+								 public void onClick(DialogInterface dialog, int id) {
+									 dialog.cancel();
+								 }
+							 });
+		AlertDialog alert = Level.rulesDialog.create();
+		alert.show();
+	}
+
+	public static void settingsDialog() {
+		settingsDialog.setTitle("Настройки")
+				  .setMessage("Включить музыку в меню?")
+				  .setIcon(R.mipmap.ic_launcher)
+				  .setCancelable(true)
+				  .setNegativeButton("Нет",
+							 new DialogInterface.OnClickListener() {
+								 public void onClick(DialogInterface dialog, int id) {
+									 if (MainView.mediaPlayer.isPlaying())
+										 MainView.mediaPlayer.pause();
+									 MainView.musicBool = false;
+									 dialog.cancel();
+								 }
+							 })
+				  .setPositiveButton("Да",
+							 new DialogInterface.OnClickListener() {
+								 public void onClick(DialogInterface dialog, int id) {
+									 if (!MainView.mediaPlayer.isPlaying())
+										 MainView.mediaPlayer.start();
+									 MainView.musicBool = true;
+									 dialog.cancel();
+								 }
+							 });
+		AlertDialog alert = Level.settingsDialog.create();
+		alert.show();
 	}
 }

@@ -15,15 +15,14 @@ public class mResources extends Thread {
 	static Context context;
 
 	static Paint paint = new Paint();
-	static Paint textScores = new Paint();
-	static Paint textTime = new Paint();
+	static Paint textComment = new Paint(), textScores = new Paint(), textTime = new Paint(), textInfo = new Paint();
 
 	public static SoundPool sounds;
 	public static int[] birdSounds = new int[MainView.BIRDS_BITMAP_COLUMNS];
 	public static int mistakeSound;
 	static Bitmap
-			  back, clouds, wire, josh, scr1, scr2, lalka, victory,
-			  lifesBitmaps, birdsBitmap, mfBitmap, fantom;
+			  back, clouds, wire, josh, scr1, scr1_2, scr2, lalka, victory,
+			  lifesBitmaps, birdsBitmap, mfBitmap, fantom, note;
 	static Bitmap[][] birdBitmaps = new Bitmap[MainView.BIRDS_BITMAP_COLUMNS][MainView.BIRDS_BITMAP_STRINGS];
 
 	mResources () {
@@ -44,12 +43,22 @@ public class mResources extends Thread {
 		if (lifesBitmaps == null)
 			lifesBitmaps = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher), MainView.BIRDS_HEIGHT / 2, MainView.BIRDS_HEIGHT / 2, false);
 		if (mfBitmap == null)
-			mfBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.megafon), MainView.BIRDS_HEIGHT * 2, MainView.BIRDS_HEIGHT * 2, false);
+			mfBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.megafon), MainView.BIRDS_HEIGHT * 2 * 650 / 750, MainView.BIRDS_HEIGHT * 2, false);
 		if (fantom == null)
 			fantom = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.fantom), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
+		if (note == null)
+			note = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.note), MainView.BIRDS_HEIGHT * 2 / 3, MainView.BIRDS_HEIGHT * 2 / 3, false);
 	}
 
 	private static void loadText() {
+		textComment.setColor(0xFFFFFFFF);
+		textComment.setTextSize(MainView.Height / 22);
+		textComment.setTextAlign(Paint.Align.CENTER);
+
+		textInfo.setColor(0xFFFFFFFF);
+		textInfo.setTextSize(MainView.Height / 22);
+		textInfo.setTextAlign(Paint.Align.LEFT);
+
 		textTime.setColor(0xffff0000);
 		textTime.setTextSize(MainView.Height / 24);
 		textTime.setTextAlign(Paint.Align.LEFT);
@@ -72,6 +81,8 @@ public class mResources extends Thread {
 			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width, MainView.Height, false);
 		if (scr1 == null)
 			scr1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1), MainView.Width, MainView.Height, false);
+		if (scr1_2 == null)
+			scr1_2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_2), MainView.Width, MainView.Height, false);
 		if (scr2 == null)
 			scr2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2), MainView.Width, MainView.Height, false);
 

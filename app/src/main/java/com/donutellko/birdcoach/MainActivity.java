@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+	static boolean paused = false;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(new MainView(this));
@@ -42,12 +43,14 @@ public class MainActivity extends AppCompatActivity {
 		super.onPause();
 		if (MainView.mediaPlayer != null)
 			if (MainView.mediaPlayer.isPlaying()) MainView.mediaPlayer.pause();
+		paused = true;
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (MainView.mediaPlayer != null)
+		paused = false;
+		if (MainView.mediaPlayer != null && paused == false)
 			if (!MainView.mediaPlayer.isPlaying())
 				MainView.mediaPlayer.pause();
 	}
