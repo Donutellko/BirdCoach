@@ -1,8 +1,6 @@
 package com.donutellko.birdcoach;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -21,22 +19,23 @@ public class mResources extends Thread {
 	public static int[] birdSounds = new int[MainView.BIRDS_BITMAP_COLUMNS];
 	public static int mistakeSound;
 	static Bitmap
-			  back, clouds, wire, josh, scr1, scr1_2, scr2, lalka, victory,
-			  lifesBitmaps, birdsBitmap, mfBitmap, fantom, note;
+			  back, clouds, wire, josh, scr1, scr2, lalka, victory,
+			  lifesBitmaps, birdsBitmap, mfBitmap, fantom, note,
+			  scr1_blue, scr1_dark, scr1_purple, scr1_red;
 	static Bitmap[][] birdBitmaps = new Bitmap[MainView.BIRDS_BITMAP_COLUMNS][MainView.BIRDS_BITMAP_STRINGS];
 
-	mResources () {
+	mResources() {
 		super("ResThread");
 	}
 
 	public static void loadResources() {
 		if (context == null) context = MainView.context;
 
+		loadSounds();
 		loadBackgrounds();
 		loadText();
 		loadBirds();
 		loadBitmaps();
-		loadSounds();
 	}
 
 	private static void loadBitmaps() {
@@ -81,10 +80,23 @@ public class mResources extends Thread {
 			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width, MainView.Height, false);
 		if (scr1 == null)
 			scr1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1), MainView.Width, MainView.Height, false);
-		if (scr1_2 == null)
-			scr1_2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_2), MainView.Width, MainView.Height, false);
+		//if (scr1_2 == null)
+		//scr1_2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_2), MainView.Width, MainView.Height, false);
 		if (scr2 == null)
 			scr2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2), MainView.Width, MainView.Height, false);
+
+		if (MainView.state.equals("Main")) {
+			if (scr1_blue == null)
+				scr1_blue = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_blue), MainView.Width / 4, MainView.Height / 2, false);
+			if (scr1_dark == null)
+				scr1_dark = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_dark), MainView.Width / 4, MainView.Height / 2, false);
+			if (scr1_purple == null)
+				scr1_purple = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_purple), MainView.Width / 4, MainView.Height / 2, false);
+			if (scr1_red == null)
+				scr1_red = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_red), MainView.Width / 4, MainView.Height, false);
+			//if (scr1_yellow == null)
+			//	scr1_yellow = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_yellow), MainView.Width / 4, MainView.Height, false);
+		}
 
 		if (lalka == null)
 			lalka = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.lalka), MainView.Width, MainView.Height, false);

@@ -1,6 +1,8 @@
 package com.donutellko.birdcoach;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -33,6 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
 	static boolean paused = false;
+
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(new MainView(this));
@@ -54,4 +57,37 @@ public class MainActivity extends AppCompatActivity {
 			if (!MainView.mediaPlayer.isPlaying())
 				MainView.mediaPlayer.pause();
 	}
+/*
+	public void onBackPressed() {
+		if (MainView.state.equals("Main")) finish();
+		else if (MainView.state.equals("Menu")) MainView.state = "Menu+Main";
+		else if (MainView.state.equals("Game")) {
+			Level.timeBool = false;
+			pauseDialog();
+		} else if (MainView.state.equals("Level")) pauseDialog();
+	}
+
+	private void pauseDialog() {
+		AlertDialog.Builder pauseDialog = new AlertDialog.Builder(MainActivity.this);
+		String[] variants = {"Продолжить", "Меню", "Выйти"};
+
+		pauseDialog.
+				  setTitle("Настройки")
+				  .setIcon(R.mipmap.ic_launcher)
+				  .setCancelable(true)
+				  .setItems(variants, new DialogInterface.OnClickListener() {
+					  @Override
+					  public void onClick(DialogInterface dialog, int which) {
+						  if (which == 0) {
+							  if (MainView.state.equals("Game")) Level.timeBool = true;
+							  dialog.cancel();
+						  } else if (which == 1)
+							  MainView.state = (MainView.state.equals("Game")) ? "Game+Menu" : "Level+Menu";
+						  else finish();
+					  }
+				  });
+		AlertDialog alert = pauseDialog.create();
+		alert.show();
+	}
+	*/
 }

@@ -44,8 +44,4 @@ public class Birds {
 	public void sound(Context c) {
 		Level.playBirdSound(type);
 	}
-
-	public void moveTo(float x, float y) {
-
-	}
 }
