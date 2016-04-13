@@ -2,7 +2,9 @@ package com.donutellko.birdcoach;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -35,10 +37,22 @@ import android.support.v7.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
 	static boolean paused = false;
+	static SharedPreferences sPref;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(new MainView(this));
+		Level.recordHard = loadScore(true);
+		Level.recordEasy = loadScore(false);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		saveScore(Level.recordEasy, false);
+		saveScore(Level.recordHard, true);
+
+		paused = true;
 	}
 
 	@Override
@@ -57,14 +71,14 @@ public class MainActivity extends AppCompatActivity {
 			if (!MainView.mediaPlayer.isPlaying())
 				MainView.mediaPlayer.pause();
 	}
-/*
+
 	public void onBackPressed() {
-		if (MainView.state.equals("Main")) finish();
-		else if (MainView.state.equals("Menu")) MainView.state = "Menu+Main";
-		else if (MainView.state.equals("Game")) {
+		if (State.state == States.MAIN) finish();
+		else if (State.state == States.MENU) State.state = States.MENU_MAIN;
+		else if (State.state == States.GAME) {
 			Level.timeBool = false;
 			pauseDialog();
-		} else if (MainView.state.equals("Level")) pauseDialog();
+		} else if (State.state == States.LEVEL) pauseDialog();
 	}
 
 	private void pauseDialog() {
@@ -79,15 +93,26 @@ public class MainActivity extends AppCompatActivity {
 					  @Override
 					  public void onClick(DialogInterface dialog, int which) {
 						  if (which == 0) {
-							  if (MainView.state.equals("Game")) Level.timeBool = true;
+							  if (State.state == States.GAME) Level.timeBool = true;
 							  dialog.cancel();
 						  } else if (which == 1)
-							  MainView.state = (MainView.state.equals("Game")) ? "Game+Menu" : "Level+Menu";
+							  State.state = (State.state == States.GAME) ? States.GAME_MENU : States.LEVEL_MENU;
 						  else finish();
 					  }
 				  });
 		AlertDialog alert = pauseDialog.create();
 		alert.show();
 	}
-	*/
+
+	static int loadScore(boolean hard) {
+		sPref = MainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
+		return sPref.getInt((hard) ? "Hard" : "Easy", 0);
+	}
+
+	static void saveScore(int score, boolean hard) {
+		sPref = MainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
+		SharedPreferences.Editor ed = sPref.edit();
+		ed.putInt((hard) ? "Hard" : "Easy", score);
+		ed.commit();
+	}
 }

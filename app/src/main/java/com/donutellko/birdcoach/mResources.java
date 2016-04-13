@@ -21,7 +21,9 @@ public class mResources extends Thread {
 	static Bitmap
 			  back, clouds, wire, josh, scr1, scr2, lalka, victory,
 			  lifesBitmaps, birdsBitmap, mfBitmap, fantom, note,
-			  scr1_blue, scr1_dark, scr1_purple, scr1_red;
+			  scr1_blue, scr1_dark, scr1_purple, scr1_red,
+			  scr2_purple1, scr2_purple2,
+			  scr3_orange1, scr3_orange2;
 	static Bitmap[][] birdBitmaps = new Bitmap[MainView.BIRDS_BITMAP_COLUMNS][MainView.BIRDS_BITMAP_STRINGS];
 
 	mResources() {
@@ -80,12 +82,10 @@ public class mResources extends Thread {
 			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width, MainView.Height, false);
 		if (scr1 == null)
 			scr1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1), MainView.Width, MainView.Height, false);
-		//if (scr1_2 == null)
-		//scr1_2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_2), MainView.Width, MainView.Height, false);
 		if (scr2 == null)
 			scr2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2), MainView.Width, MainView.Height, false);
 
-		if (MainView.state.equals("Main")) {
+		if (MainView.state == States.MAIN) {
 			if (scr1_blue == null)
 				scr1_blue = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_blue), MainView.Width / 4, MainView.Height / 2, false);
 			if (scr1_dark == null)
@@ -94,8 +94,18 @@ public class mResources extends Thread {
 				scr1_purple = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_purple), MainView.Width / 4, MainView.Height / 2, false);
 			if (scr1_red == null)
 				scr1_red = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_red), MainView.Width / 4, MainView.Height, false);
-			//if (scr1_yellow == null)
-			//	scr1_yellow = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_yellow), MainView.Width / 4, MainView.Height, false);
+
+
+			if (scr3_orange1 == null)
+				scr3_orange1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange1), MainView.Width / 4, MainView.Height / 2, false);
+			if (scr3_orange2 == null)
+				scr3_orange2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange2), MainView.Width / 4, MainView.Height / 2, false);
+
+
+			if (scr2_purple1 == null)
+				scr2_purple1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2_purple1), MainView.Width / 4, MainView.Height / 2, false);
+			if (scr2_purple2 == null)
+				scr2_purple2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2_purple2), MainView.Width / 2, MainView.Height / 2, false);
 		}
 
 		if (lalka == null)

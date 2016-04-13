@@ -1,7 +1,9 @@
 package com.donutellko.birdcoach;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 
 import java.util.Random;
 
@@ -15,7 +17,7 @@ public class Level extends Thread {
 	static int level = 0, score = 0, time = 0, lifes = 3, howMushTimesYouCanListenTheMelody;
 	static int levels[] = {3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
 
-	static boolean timeBool = false;
+	static boolean timeBool = false, hardBool = false;
 
 	static int[] melodyOrder = new int[1];
 	static Birds[] birdPlaced = new Birds[9];
@@ -35,6 +37,9 @@ public class Level extends Thread {
 			  negativeComment = {"Медвед топтался на ваших ушах?", "Вы играете на наших нервах!", "Не мучайте птичек, почистите уши!", "Птичку... Жалко...",
 						 "Вы как Бетховен! Тоже глухой..", "Выньте уже бананы из ушей!", "Сольфеджио часто прогуливали?", "Чижик-Пыжик, где ты был?"},
 			  counts = {"Трио", "Квартет", "Квинтет", "Секстет", "Септет", "Октет", "Нонет"};
+
+	public static int recordHard, recordEasy;
+	static boolean newRecord;
 
 	/*
 	 Поздр
@@ -60,13 +65,14 @@ public class Level extends Thread {
 	}
 
 	public static void newGame() {
+		newRecord = false;
 		score = 0;
 		lifes = 3;
-		level = (MainView.hardBool) ? 5 : 0;
-		if (MainView.hardBool)
-			nextLevelDialog("Новая сложная игра, секстет птичек", levels[5], level - 4);
+		level = (hardBool) ? 5 : 0;
+		if (hardBool)
+			nextLevelDialog("Новая сложная игра, секстет птичек", level - 4);
 		else
-			nextLevelDialog("Новая игра", levels[0], level + 1);
+			nextLevelDialog("Новая игра, трио птичек", level + 1);
 		nextLevel();
 	}
 
@@ -85,10 +91,10 @@ public class Level extends Thread {
 		timeBool = false;
 		howMushTimesYouCanListenTheMelody = melodyOrder.length;
 
-		if (level > 1 && !MainView.hardBool)
-			nextLevelDialog(counts[melodyOrder.length - 3] + " птичек", melodyOrder.length, level);
-		else if (MainView.hardBool && !(level == 6))
-			nextLevelDialog(counts[melodyOrder.length - 3] + " птичек", melodyOrder.length, level - 5);
+		if (level > 1 && !hardBool)
+			nextLevelDialog(counts[melodyOrder.length - 3] + " птичек", level);
+		else if (hardBool && !(level == 6))
+			nextLevelDialog(counts[melodyOrder.length - 3] + " птичек", level - 5);
 	}
 
 	private static void mixPositions() {
@@ -161,28 +167,30 @@ public class Level extends Thread {
 				} else break;
 				i++;
 			}
-			if (c == i && i == melodyOrder.length) {
+			if (c == i && i == melodyOrder.length) {	// Мелодия правильная
 				comment = Level.positiveComment[Level.random.nextInt(Level.positiveComment.length)];
 
 				score += level * 100;
 				score += (time < melodyOrder.length * 5 && level != 0) ? melodyOrder.length * (melodyOrder.length * 5 - time) : 0;
 
-				MainView.state = "Game+Level";
-				MainView.stateL = "Victory";
-			} else {
+				com.donutellko.birdcoach.State.state = com.donutellko.birdcoach.States.GAME_LEVEL;
+				com.donutellko.birdcoach.State.victory = true;
+			} else {												// Ошибка пщщщщ БУМ!
 				comment = Level.negativeComment[Level.random.nextInt(Level.negativeComment.length)];
 				Level.lifes--;
 				mResources.sounds.play(mResources.mistakeSound, 1.0f, 1.0f, 1, 0, 1.0f);
 				if (lifes == 0) {
-					MainView.state = "Game+Level";
-					MainView.stateL = "Loose";
+					com.donutellko.birdcoach.State.state = com.donutellko.birdcoach.States.GAME_LEVEL;
+					com.donutellko.birdcoach.State.victory = false;
+					if (hardBool && recordHard < score) { recordHard = score; newRecord = true; }
+					else if (!hardBool && recordEasy < score) { recordEasy = score; newRecord = true; }
 				}
-				mistakeDialog();
+				//mistakeDialog();
 			}
 		}
 	}
 
-	public static void playMelody(int[] order) {
+	static void playMelody(int[] order) {
 		timeBool = true;
 		if (howMushTimesYouCanListenTheMelody != 0) {
 			howMushTimesYouCanListenTheMelody--;
@@ -197,26 +205,28 @@ public class Level extends Thread {
 		}
 	}
 
-	public static void playBirdSound(int type) {
+	static void playBirdSound(int type) {
 		//float speed = (float) (0.5 + (EndlessView.BIRDS_BITMAP_COLUMNS - type) * (1.5 / EndlessView.BIRDS_BITMAP_COLUMNS));
 		int sound = mResources.birdSounds[MainView.BIRDS_BITMAP_COLUMNS - type - 1];
 		mResources.sounds.play(sound, 1.0f, 1.0f, type, 0, 1.0f);
 	}
 
-	public static void nextLevelDialog(String title, int count, int level) {
+	static void nextLevelDialog(String title, int level) {
 		AlertDialog.Builder levelDialog = new AlertDialog.Builder(MainView.context);
 
 		timeBool = false;
 		String s = "";
 
-		s += (count <= 4) ? " птички" : " птичек";
-		if (level > 1 && !(level == 5 && MainView.hardBool))  {
+		if (level > 1 && !(level == 5 && hardBool))  {
 			s = "\nУ вас уже " + score;
-			s += (score % 10 < 5) ? " очка!" : " очков!";
+			s += ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков")  +
+					  ((hardBool) ?
+								 ((recordHard < score) ? " Предыдущий рекорд на большой сложности - " + recordHard : "") :
+								 (recordHard < score) ? " Предыдущий рекорд на низкой сложности - " + recordEasy : "" );
 		}
 
 		levelDialog.setTitle(title)
-				  .setMessage("Уровень " + level + "\n" + count + s)
+				  .setMessage("Уровень " + level + "\n" + s)
 				  .setIcon(R.mipmap.ic_launcher)
 				  .setCancelable(false)
 				  .setNegativeButton("Начать",
@@ -230,10 +240,10 @@ public class Level extends Thread {
 		alert.show();
 	}
 
-	private static void mistakeDialog() {
-		AlertDialog.Builder levelDialog = new AlertDialog.Builder(MainView.context);
+	static void mistakeDialog() {
+		AlertDialog.Builder mistakeDialog = new AlertDialog.Builder(MainView.context);
 
-		levelDialog.setTitle("Упс!")
+		mistakeDialog.setTitle("Упс!")
 				  .setMessage("Кажется, ты перепутал звуки\nПрослушай мелодию заново и попробуй ещё раз!")
 				  .setIcon(R.mipmap.ic_launcher)
 				  .setCancelable(false)
@@ -245,9 +255,10 @@ public class Level extends Thread {
 									 dialog.cancel();
 								 }
 							 });
+		mistakeDialog.show();
 	}
 
-	public static void rulesDialog() {
+	static void rulesDialog() {
 		AlertDialog.Builder rulesDialog = new AlertDialog.Builder(MainView.context);
 
 		rulesDialog.setTitle("Правила")
@@ -269,12 +280,12 @@ public class Level extends Thread {
 		alert.show();
 	}
 
-	public static void settingsDialog() {
+	static void settingsDialog() {
 		AlertDialog.Builder settingsDialog = new AlertDialog.Builder(MainView.context);
 
 		String settings[] = new String[3];
 		settings[0] = (MainView.musicBool) ? "Выключить музыку" : "Включить музыку";
-		settings[1] = (MainView.hardBool) ? "Текущая сложность: Маэстро" : "Текущая сложность: Новичок";
+		settings[1] = (hardBool) ? "Текущая сложность: Маэстро" : "Текущая сложность: Новичок";
 		settings[2] = "Закрыть";
 
 		settingsDialog.
@@ -285,11 +296,12 @@ public class Level extends Thread {
 					  @Override
 					  public void onClick(DialogInterface dialog, int which) {
 						  if (which == 0) MainView.musicBool = !MainView.musicBool;
-						  else if (which == 1) MainView.hardBool = !MainView.hardBool;
+						  else if (which == 1) hardBool = !hardBool;
 						  else dialog.cancel();
 					  }
 				  });
 		AlertDialog alert = settingsDialog.create();
 		alert.show();
 	}
+
 }

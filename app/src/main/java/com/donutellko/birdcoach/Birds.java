@@ -35,8 +35,10 @@ public class Birds {
 			mResources.loadBirds();
 
 		float w = 0;
-		if (MainView.state.equals("Menu+Game") || MainView.state.equals("Level+Game")) w = MainView.allX + MainView.Width;
-		else if (MainView.state.equals("Game+Level")) w = MainView.allX;
+
+		if (State.state == States.GAME) w = 0;
+		else if (State.MovingTo() == States.GAME) w = MainView.allX + MainView.Width;
+		else if (State.MovingFrom() == States.GAME) w = MainView.allX;
 
 		canvas.drawBitmap(mResources.birdBitmaps[type][pose], w + x, y, paint);
 	}

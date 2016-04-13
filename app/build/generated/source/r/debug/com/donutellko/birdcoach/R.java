@@ -1601,15 +1601,20 @@ containing a value of this type.
         public static final int lalka=0x7f02004a;
         public static final int megafon=0x7f02004b;
         public static final int note=0x7f02004c;
-        public static final int notification_template_icon_bg=0x7f020055;
+        public static final int notification_template_icon_bg=0x7f02005a;
         public static final int scr1=0x7f02004d;
         public static final int scr1_blue=0x7f02004e;
         public static final int scr1_dark=0x7f02004f;
         public static final int scr1_purple=0x7f020050;
         public static final int scr1_red=0x7f020051;
         public static final int scr2=0x7f020052;
-        public static final int victory=0x7f020053;
-        public static final int wire=0x7f020054;
+        public static final int scr2_green=0x7f020053;
+        public static final int scr2_purple1=0x7f020054;
+        public static final int scr2_purple2=0x7f020055;
+        public static final int scr3_orange1=0x7f020056;
+        public static final int scr3_orange2=0x7f020057;
+        public static final int victory=0x7f020058;
+        public static final int wire=0x7f020059;
     }
     public static final class id {
         public static final int action0=0x7f0d0050;
