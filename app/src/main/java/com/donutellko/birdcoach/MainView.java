@@ -33,7 +33,7 @@ public class MainView extends View {
 
 	public static final int
 			  BIRDS_BITMAP_COLUMNS = 9,
-			  BIRDS_BITMAP_STRINGS = 5;
+			  BIRDS_BITMAP_STRINGS = 5 - 2;
 	public static int
 			  BIRDS_HEIGHT = 100,
 			  BIRDS_WIDTH = BIRDS_HEIGHT * 248 / 335;
@@ -80,7 +80,7 @@ public class MainView extends View {
 
 		allX += allXspeed;
 		cloudsX += cloudsXspeed;
-		for (int i = 0; i < drawCounter.length; i++) drawCounter[i]--;
+		for (int i = 0; i < drawCounter.length; i++) drawCounter[i] += (drawCounter[i] < 200) ? -1 : 100;
 		if (cloudsX <= -Width) cloudsX = Width + cloudsX;
 
 		if (State.isMoving()) {
@@ -115,15 +115,17 @@ public class MainView extends View {
 			float textX = (State.state == States.LEVEL || State.MovingFrom() == States.LEVEL) ? textX = allX : allX + Width;
 			canvas.drawText(Level.comment, textX + Width * 7 / 16, Height * 0.55f, mResources.textComment);
 			canvas.drawText((Level.newRecord) ? "Новый рекорд! " + Level.score + ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков") : Level.score + ((Level.score % 10 < 4) ? " очка" : " очков") + ((Level.hardBool) ?
-					  ((Level.recordHard != 0) ? ", предыдущий рекорд - " + Level.recordHard : ".") :
-					  ((Level.recordEasy != 0) ? ", предыдущий рекорд - " + Level.recordEasy : ".")), textX + 30, Height - Height / 18, mResources.textInfo);
+					  ((Level.recordHard != 0) ? ", рекорд - " + Level.recordHard : "") :
+					  ((Level.recordEasy != 0) ? ", рекорд - " + Level.recordEasy : "")), textX + 30, Height - Height / 18, mResources.textInfo);
 		}
 
 		if (State.state == States.GAME) {
 			String TS = "Time: " + Level.time / 60 + ":";
 			TS += (Level.time % 60 < 10) ? "0" + Level.time % 60 : Level.time % 60;
 
-			canvas.drawText(Level.score + ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков"), MainView.Height / 30, MainView.Height / 30, mResources.textScores);
+			canvas.drawText("Score: " + Level.score,
+					  // + ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков")
+					  MainView.Height / 30, MainView.Height / 30, mResources.textScores);
 			canvas.drawText(TS, MainView.Width * 7 / 8, MainView.Height / 30, mResources.textTime);
 
 			for (int i = 0; i < Level.lifes; i++)
@@ -165,7 +167,7 @@ public class MainView extends View {
 			switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					for (Birds b : birds)
-						if (x > b.x && x < (b.x + BIRDS_WIDTH * 1.2) && y > b.y && y < (b.y + BIRDS_HEIGHT * 1.2)) {
+						if (x > b.x + BIRDS_WIDTH * 0.2 && x < (b.x + BIRDS_WIDTH * 1.2) && y > b.y + BIRDS_HEIGHT * 0.2 && y < (b.y + BIRDS_HEIGHT * 1.2)) {
 							deltaX = b.x - x;
 							deltaY = b.y - y;
 							activeBird = b;

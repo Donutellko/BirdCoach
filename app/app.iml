@@ -65,26 +65,19 @@
       <sourceFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/src/androidTest/jni" isTestSource="true" />
       <sourceFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/src/androidTest/rs" isTestSource="true" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/assets" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/bundles" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/classes" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/coverage-instrumented-classes" />
+      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/debug" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/dependency-cache" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/dex" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/dex-cache" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/incremental" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/jacoco" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/javaResources" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/libs" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/lint" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/manifests" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/ndk" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/pre-dexed" />
-      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/proguard" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/res" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/rs" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/symbols" />
+      <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/intermediates/tmp" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/outputs" />
       <excludeFolder url="file:///mnt/Data/AndroidStudio_WS/BirdCoach/app/build/tmp" />
     </content>

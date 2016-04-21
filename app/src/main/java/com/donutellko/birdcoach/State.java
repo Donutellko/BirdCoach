@@ -89,8 +89,8 @@ public class State {
 			MainView.canvas.drawText("Нажмите, чтобы продолжить...", x + 30, Height - Height / 22, mResources.textInfo);
 		}
 
-		if (State.MovingFrom() == States.MENU || State.MovingTo() == States.MENU) {
-			float x = (State.MovingFrom() == States.MENU) ? allX : allX + Width;
+		if (State.MovingFrom() == States.MENU || State.MovingTo() == States.MENU || State.MovingFrom() == States.LEVEL || State.MovingTo() == States.LEVEL) {
+			float x = (State.MovingFrom() == States.MENU || State.MovingFrom() == States.LEVEL) ? allX : allX + Width;
 
 			if (drawCounter[4] < -30) drawCounter[4] = 30;
 			drawB((drawCounter[4] > 0) ? mResources.scr3_orange1 : mResources.scr3_orange2, x + Width / 4, 5);

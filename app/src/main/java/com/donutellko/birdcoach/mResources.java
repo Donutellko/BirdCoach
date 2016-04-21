@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
@@ -34,13 +35,54 @@ public class mResources extends Thread {
 		if (context == null) context = MainView.context;
 
 		loadSounds();
-		loadBackgrounds();
+		if (MainView.Width > 0 && MainView.Height > 0)
+			loadBitmaps();
 		loadText();
 		loadBirds();
-		loadBitmaps();
 	}
 
-	private static void loadBitmaps() {
+
+	private static void loadText() {
+		// Typeface type = Typeface.createFromAsset(MainView.context.getAssets(), "thickhead.ttf");
+		Typeface type = Typeface.createFromAsset(MainView.context.getAssets(), "comic.ttf");
+
+		textComment.setColor(0xFFFFFFFF);
+		textComment.setTextSize(MainView.Height / 22);
+		textComment.setTextAlign(Paint.Align.CENTER);
+		textComment.setTypeface(type);
+
+		textInfo.setColor(0xFFFFFFFF);
+		textInfo.setTextSize(MainView.Height / 22);
+		textInfo.setTextAlign(Paint.Align.LEFT);
+		textInfo.setTypeface(type);
+
+		textTime.setColor(0xffff0000);
+		textTime.setTextSize(MainView.Height / 24);
+		textTime.setTextAlign(Paint.Align.LEFT);
+		textTime.setTypeface(type);
+
+		textScores.setColor(0xffff0000);
+		textScores.setTextSize(MainView.Height / 24);
+		textScores.setTextAlign(Paint.Align.LEFT);
+		textScores.setTypeface(type);
+	}
+
+	public static void loadBitmaps() {
+		if (context == null) context = MainView.context;
+
+		if (back == null)
+			back = loadRes(R.drawable.back, 1, 1);
+		if (josh == null)
+			josh = loadRes(R.drawable.josh, 1, 1);
+		if (wire == null)
+			wire = loadRes(R.drawable.wire, 1, 1);
+		if (clouds == null)
+			clouds = loadRes(R.drawable.clouds, 1, 1);
+		if (scr1 == null)
+			scr1 = loadRes(R.drawable.scr1, 1, 1);
+		if (scr2 == null)
+			scr2 = loadRes(R.drawable.scr2, 1, 1);
+
 		if (lifesBitmaps == null)
 			lifesBitmaps = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher), MainView.BIRDS_HEIGHT / 2, MainView.BIRDS_HEIGHT / 2, false);
 		if (mfBitmap == null)
@@ -49,81 +91,53 @@ public class mResources extends Thread {
 			fantom = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.fantom), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
 		if (note == null)
 			note = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.note), MainView.BIRDS_HEIGHT * 2 / 3, MainView.BIRDS_HEIGHT * 2 / 3, false);
-	}
 
-	private static void loadText() {
-		textComment.setColor(0xFFFFFFFF);
-		textComment.setTextSize(MainView.Height / 22);
-		textComment.setTextAlign(Paint.Align.CENTER);
-
-		textInfo.setColor(0xFFFFFFFF);
-		textInfo.setTextSize(MainView.Height / 22);
-		textInfo.setTextAlign(Paint.Align.LEFT);
-
-		textTime.setColor(0xffff0000);
-		textTime.setTextSize(MainView.Height / 24);
-		textTime.setTextAlign(Paint.Align.LEFT);
-
-		textScores.setColor(0xffff0000);
-		textScores.setTextSize(MainView.Height / 24);
-		textScores.setTextAlign(Paint.Align.LEFT);
-	}
-
-	public static void loadBackgrounds() {
-		if (context == null) context = MainView.context;
-
-		if (back == null)
-			back = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.back), MainView.Width, MainView.Height, false);
-		if (josh == null)
-			josh = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.josh), MainView.Width, MainView.Height, false);
-		if (wire == null)
-			wire = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.wire), MainView.Width, MainView.Height, false);
-		if (clouds == null)
-			clouds = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.clouds), MainView.Width, MainView.Height, false);
-		if (scr1 == null)
-			scr1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1), MainView.Width, MainView.Height, false);
-		if (scr2 == null)
-			scr2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2), MainView.Width, MainView.Height, false);
-
-		if (MainView.state == States.MAIN) {
-			if (scr1_blue == null)
-				scr1_blue = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_blue), MainView.Width / 4, MainView.Height / 2, false);
-			if (scr1_dark == null)
-				scr1_dark = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_dark), MainView.Width / 4, MainView.Height / 2, false);
-			if (scr1_purple == null)
-				scr1_purple = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_purple), MainView.Width / 4, MainView.Height / 2, false);
-			if (scr1_red == null)
-				scr1_red = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr1_red), MainView.Width / 4, MainView.Height, false);
-
-
-			if (scr3_orange1 == null)
-				scr3_orange1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange1), MainView.Width / 4, MainView.Height / 2, false);
-			if (scr3_orange2 == null)
-				scr3_orange2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange2), MainView.Width / 4, MainView.Height / 2, false);
-
-
-			if (scr2_purple1 == null)
-				scr2_purple1 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2_purple1), MainView.Width / 4, MainView.Height / 2, false);
-			if (scr2_purple2 == null)
-				scr2_purple2 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.scr2_purple2), MainView.Width / 2, MainView.Height / 2, false);
-		}
 
 		if (lalka == null)
-			lalka = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.lalka), MainView.Width, MainView.Height, false);
+			lalka = loadRes(R.drawable.lalka, 1, 1);
 		if (victory == null)
-			victory = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.victory), MainView.Width, MainView.Height, false);
+			victory = loadRes(R.drawable.victory, 1, 1);
 
+
+		if (scr1_blue == null)
+			scr1_blue = loadRes(R.drawable.scr1_blue, 0.25f, 0.5f);
+		if (scr1_dark == null)
+			scr1_dark = loadRes(R.drawable.scr1_dark, 0.25f, 0.5f);
+		if (scr1_purple == null)
+			scr1_purple = loadRes(R.drawable.scr1_purple, 0.25f, 0.5f);
+		if (scr1_red == null)
+			scr1_red = loadRes(R.drawable.scr1_red, 0.25f, 1);
+
+
+		if (scr2_purple1 == null)
+			scr2_purple1 = loadRes(R.drawable.scr2_purple1, 0.25f, 0.5f);
+		if (scr2_purple2 == null)
+			scr2_purple2 = loadRes(R.drawable.scr2_purple2, 0.5f, 0.5f);
+		if (scr3_orange1 == null)
+			scr3_orange1 = loadRes(R.drawable.scr3_orange1, 0.25f, 0.5f);
+		if (scr3_orange2 == null)
+			scr3_orange2 = loadRes(R.drawable.scr3_orange2, 0.25f, 0.5f);
+
+	}
+
+	private static Bitmap loadRes(int resource, float multWidth, float multHeight) {
+		return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), resource), (int) (MainView.Width * multWidth), (int) (MainView.Height * multHeight), false);
 	}
 
 	public static void loadBirds() {
-		if (birdsBitmap == null)
-			birdsBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.birds);
 		for (int type = 0; type < MainView.BIRDS_BITMAP_COLUMNS; type++) {
 			for (int pose = 0; pose < MainView.BIRDS_BITMAP_STRINGS; pose++) {
-				if (birdBitmaps[type][pose] == null)
-					birdBitmaps[type][pose] = Bitmap.createScaledBitmap(createBitmap(birdsBitmap, 5 + type * 673, pose * 494 + 5, 670, 494), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
+				if (birdBitmaps[type][pose] == null) {
+					int w = MainView.Width;
+					int h = MainView.Width / 2;
+					if (birdsBitmap == null)
+						birdsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.birds), w, h, false);
+					// birdBitmaps[type][pose] = Bitmap.createScaledBitmap(createBitmap(birdsBitmap, (5 + type * 673 < MainView.Width) ? (5 + type * 673) : (5 + type * 336), pose * 494 + 5, 670, 494), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
+					birdBitmaps[type][pose] = Bitmap.createScaledBitmap(createBitmap(birdsBitmap, w/9 * type, h/6 * pose, w / 9, h / 6), MainView.BIRDS_HEIGHT, MainView.BIRDS_WIDTH, false);
+				}
 			}
 		}
+		birdsBitmap = null;
 	}
 
 	public static void loadSounds() {

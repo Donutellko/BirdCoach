@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private void pauseDialog() {
 		AlertDialog.Builder pauseDialog = new AlertDialog.Builder(MainActivity.this);
-		String[] variants = {"Продолжить", "Меню", "Выйти"};
+		String[] variants = {"Продолжить", "Меню", (MainView.musicBool) ? "Выключить музыку" : "Включить музыку", "Выйти"};
 
 		pauseDialog.
 				  setTitle("Настройки")
@@ -95,11 +95,13 @@ public class MainActivity extends AppCompatActivity {
 						  if (which == 0) {
 							  if (State.state == States.GAME) Level.timeBool = true;
 							  dialog.cancel();
-						  } else if (which == 1)
+						  } else if (which == 1) {
 							  State.state = (State.state == States.GAME) ? States.GAME_MENU : States.LEVEL_MENU;
-						  else finish();
+						  }  else if (which == 2) {
+							  MainView.musicBool = !MainView.musicBool;
+						  } else finish();
 					  }
-				  });
+	});
 		AlertDialog alert = pauseDialog.create();
 		alert.show();
 	}
