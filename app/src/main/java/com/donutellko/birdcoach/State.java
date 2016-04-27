@@ -2,9 +2,6 @@ package com.donutellko.birdcoach;
 
 import android.graphics.Bitmap;
 
-/**
- * Created by donat on 4/13/16.
- */
 public class State {
 
 	public static States state = States.MAIN;
@@ -47,66 +44,66 @@ public class State {
 	}
 
 	public static void draw() {
-		float allX = MainView.allX;
-		float Width = MainView.Width;
+		float forwardX = mainView.forwardX;
+		float Width = mainView.Width;
 
 		if (MovingFrom() == States.MAIN)
-			MainView.drawB(mResources.scr1, allX, 0);
+			drawB(Res.forwardMain, forwardX, 0);
 		else if (MovingFrom() == States.MENU)
-			MainView.drawB(mResources.scr2, allX, 0);
+			drawB(Res.forwardMenu, forwardX, 0);
 		else if (MovingFrom() == States.GAME)
-			MainView.drawB(mResources.josh, allX, 0);
+			drawB(Res.bush, forwardX, 0);
 		else if (MovingFrom() == States.LEVEL)
-			MainView.drawB((victory) ? mResources.victory : mResources.lalka, allX, 0);
+			drawB((victory) ? Res.forwardVictory : Res.forwardLoose, forwardX, 0);
 
 		if (MovingTo() == States.MAIN)
-			MainView.drawB(mResources.scr1, allX + Width, 0);
+			drawB(Res.forwardMain, forwardX + Width, 0);
 		else if (MovingTo() == States.MENU)
-			MainView.drawB(mResources.scr2, allX + Width, 0);
+			drawB(Res.forwardMenu, forwardX + Width, 0);
 		else if (MovingTo() == States.GAME)
-			MainView.drawB(mResources.josh, allX + Width, 0);
+			drawB(Res.bush, forwardX + Width, 0);
 		else if (MovingTo() == States.LEVEL)
-			MainView.drawB((victory) ? mResources.victory : mResources.lalka, allX + Width, 0);
+			drawB((victory) ? Res.forwardVictory : Res.forwardLoose, forwardX + Width, 0);
 	}
 
 
 	public static void animate(int[] drawCounter) {
-		float allX = MainView.allX;
-		float Width = MainView.Width, Height = MainView.Height;
+		float forwardX = mainView.forwardX;
+		float Width = mainView.Width, Height = mainView.Height;
 
 		if (State.MovingFrom() == States.MAIN || State.MovingTo() == States.MAIN) {
-			float x = (State.MovingFrom() == States.MAIN) ? allX : allX + Width;
+			float x = (State.MovingFrom() == States.MAIN) ? forwardX : forwardX + Width;
 
-			if (drawCounter[0] > 0) drawB(mResources.scr1_blue, x, 0);
+			if (drawCounter[0] > 0) drawB(Res.animMain[0], x, 0);
 			else if (drawCounter[0] < -163) drawCounter[0] = 47;
-			if (drawCounter[1] > 0) drawB(mResources.scr1_dark, x + Width / 4 - 1, 0);
+			if (drawCounter[1] > 0) drawB(Res.animMain[1], x + Width / 4 - 1, 0);
 			else if (drawCounter[1] < -75) drawCounter[1] = 52;
-			if (drawCounter[2] > 0) drawB(mResources.scr1_red, x + Width / 2, 0);
+			if (drawCounter[2] > 0) drawB(Res.animMain[2], x + Width / 2, 0);
 			else if (drawCounter[2] < -32) drawCounter[2] = 29;
-			if (drawCounter[3] > 0) drawB(mResources.scr1_purple, x + Width * 3 / 4 + 5, Height / 2);
+			if (drawCounter[3] > 0) drawB(Res.animMain[3], x + Width * 3 / 4 + 5, Height / 2);
 			else if (drawCounter[3] < -59) drawCounter[3] = 148;
 
-			MainView.canvas.drawText("Нажмите, чтобы продолжить...", x + 30, Height - Height / 22, mResources.textInfo);
+			mainView.sCanvas.drawText((Res.loadedMain) ? "Нажмите, чтобы продолжить..." : "Подождите...", x + 30, Height - Height / 22, Res.textInfo);
 		}
 
 		if (State.MovingFrom() == States.MENU || State.MovingTo() == States.MENU || State.MovingFrom() == States.LEVEL || State.MovingTo() == States.LEVEL) {
-			float x = (State.MovingFrom() == States.MENU || State.MovingFrom() == States.LEVEL) ? allX : allX + Width;
+			float x = (State.MovingFrom() == States.MENU || State.MovingFrom() == States.LEVEL) ? forwardX : forwardX + Width;
 
 			if (drawCounter[4] < -30) drawCounter[4] = 30;
-			drawB((drawCounter[4] > 0) ? mResources.scr3_orange1 : mResources.scr3_orange2, x + Width / 4, 5);
+			drawB((drawCounter[4] > 0) ? Res.animVictory[0] : Res.animVictory[1], x + Width / 4, 5);
 
 			if (drawCounter[5] > 50)
 
-			if (drawCounter[5] > 50) drawB(mResources.scr2_purple2, x, Height / 2);
+			if (drawCounter[5] > 50) drawB(Res.animMenu[2], x, Height / 2);
 			else if (drawCounter[5] < -100) drawCounter[5] = 100;
-			else if (drawCounter[5] < -50) drawB(mResources.scr2_purple1, x + Width * 1 / 2, Height / 2);
+			else if (drawCounter[5] < -50) drawB(Res.animMenu[1], x + Width * 1 / 2, Height / 2);
 		}
 
-		MainView.drawCounter = drawCounter;
+		mainView.drawCounter = drawCounter;
 	}
 
 	public static void drawB(Bitmap res, float x, float y) {
-		MainView.canvas.drawBitmap(res, x, y, mResources.paint);
+		mainView.sCanvas.drawBitmap(res, x, y, Res.paint);
 	}
 }
 

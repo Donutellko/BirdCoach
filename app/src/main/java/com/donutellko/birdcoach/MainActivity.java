@@ -8,69 +8,55 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-/**
- * Индивидуальный проект Шергалиса Доната (donutellko@gmail.com).
- * Info: Игра BirdCoach ("Птичий тренер"), призвана развивать у детей музыкальный слух в игровой форме.
- * Основная информация находится в файле BirdCoach.pdf
- * <p/>
- * Условные обозначения в комментариях:
- * _ : временное решение
- * - : не выполненная задача
- * + : выполненная задача
- * : проблемный участок
- * . : задача выполнена и работает, как надо.
- * <p/>
- * Префиксы:
- * b : кнопка
- * c : onClick method
- * t : временная переменная
- * e : EditText
- */
-
-/*
- Список Activity:
-     _ MainActivity
-     _ EndlessActivity для бесконечного режима игры
-
- */
-
 public class MainActivity extends AppCompatActivity {
 
 	static boolean paused = false;
 	static SharedPreferences sPref;
+	public static Res ResThread;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(new MainView(this));
+		setContentView(new mainView(this));
+
+		ResThread = new Res();
+		ResThread.run();
+
 		Level.recordHard = loadScore(true);
 		Level.recordEasy = loadScore(false);
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (Res.player != null && !paused)
+			if (!Res.player.isPlaying())
+				Res.player.pause();
+
+		paused = false;
+	}
+
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		if (Res.player != null)
+			if (Res.player.isPlaying()) Res.player.pause();
+
+		paused = true;
+	}
+
+	@Override
 	protected void onStop() {
 		super.onStop();
+
 		saveScore(Level.recordEasy, false);
 		saveScore(Level.recordHard, true);
 
 		paused = true;
 	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		if (MainView.mediaPlayer != null)
-			if (MainView.mediaPlayer.isPlaying()) MainView.mediaPlayer.pause();
-		paused = true;
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		paused = false;
-		if (MainView.mediaPlayer != null && paused == false)
-			if (!MainView.mediaPlayer.isPlaying())
-				MainView.mediaPlayer.pause();
-	}
 
 	public void onBackPressed() {
 		if (State.state == States.MAIN) finish();
@@ -83,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private void pauseDialog() {
 		AlertDialog.Builder pauseDialog = new AlertDialog.Builder(MainActivity.this);
-		String[] variants = {"Продолжить", "Меню", (MainView.musicBool) ? "Выключить музыку" : "Включить музыку", "Выйти"};
+		String[] variants = {"Продолжить", "Меню", (mainView.musicBool) ? "Выключить музыку" : "Включить музыку", "Выйти"};
 
 		pauseDialog.
 				  setTitle("Настройки")
@@ -97,24 +83,27 @@ public class MainActivity extends AppCompatActivity {
 							  dialog.cancel();
 						  } else if (which == 1) {
 							  State.state = (State.state == States.GAME) ? States.GAME_MENU : States.LEVEL_MENU;
-						  }  else if (which == 2) {
-							  MainView.musicBool = !MainView.musicBool;
+						  } else if (which == 2) {
+							  mainView.musicBool = !mainView.musicBool;
 						  } else finish();
 					  }
-	});
+				  });
 		AlertDialog alert = pauseDialog.create();
 		alert.show();
 	}
 
+
 	static int loadScore(boolean hard) {
-		sPref = MainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
+		sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
 		return sPref.getInt((hard) ? "Hard" : "Easy", 0);
 	}
 
 	static void saveScore(int score, boolean hard) {
-		sPref = MainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
+		sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
 		SharedPreferences.Editor ed = sPref.edit();
 		ed.putInt((hard) ? "Hard" : "Easy", score);
-		ed.commit();
+		ed.apply();
 	}
+
+
 }

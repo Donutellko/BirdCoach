@@ -12,6 +12,7 @@ public class Birds {
 	int type;   // Тип птицы
 	int pose;
 	int poseTimer = 100;
+	boolean touched = false;
 	Random random = new Random();
 
 	public Birds(float x, float y, int type) {
@@ -23,27 +24,38 @@ public class Birds {
 	}
 
 	public void drawBird(Canvas canvas) {
+		float xw = 0;
 
-		if (poseTimer != 0)
-			poseTimer--;
-		else {
-			pose = random.nextInt(3);
-			if (pose == 0) poseTimer = 50;
-			else poseTimer = 10;
+		if (touched) {
+			pose = 3;
+		} else {
+			if (poseTimer != 0)
+				poseTimer--;
+			else {
+				pose = random.nextInt(3);
+				if (pose == 0) poseTimer = 50;
+				else poseTimer = 10;
+			}
+			//if (Res.birdBitmaps[type][pose] == null) Res.loadBirds();
+
+
+
+			if (State.state == States.GAME) xw = 0;
+			else if (State.MovingTo() == States.GAME) xw = mainView.forwardX + mainView.Width;
+			else if (State.MovingFrom() == States.GAME) xw = mainView.forwardX;
 		}
-		if (mResources.birdBitmaps[type][pose] == null)
-			mResources.loadBirds();
 
-		float w = 0;
-
-		if (State.state == States.GAME) w = 0;
-		else if (State.MovingTo() == States.GAME) w = MainView.allX + MainView.Width;
-		else if (State.MovingFrom() == States.GAME) w = MainView.allX;
-
-		canvas.drawBitmap(mResources.birdBitmaps[type][pose], w + x, y, paint);
+		canvas.drawBitmap(Res.birdBitmaps[type][pose], xw + x, y, paint);
 	}
 
-	public void sound(Context c) {
+	public void sound() {
 		Level.playBirdSound(type);
+	}
+
+	public boolean checkTouch(float tx, float ty) {
+		return tx > (x - mainView.BIRDS_WIDTH * 0.2) &&
+				  tx < (x + mainView.BIRDS_WIDTH * 1.2) &&
+				  ty > (y - mainView.BIRDS_HEIGHT * 0.2) &&
+				  ty < (y + mainView.BIRDS_HEIGHT * 1.2);
 	}
 }
