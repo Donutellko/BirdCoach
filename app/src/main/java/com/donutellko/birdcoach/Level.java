@@ -13,7 +13,7 @@ public class Level extends Thread {
 	static int level = 0, score = 0, time = 0, lifes = 3, howMushTimesYouCanListenTheMelody;
 	// static int levels[] = {3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
 
-	static boolean timeBool = false, hardBool = false;
+	static boolean timeBool = false, hardBool = false, musicBool = true;
 
 	static int[] melodyOrder = new int[1];
 	static Birds[] birdPlaced = new Birds[9];

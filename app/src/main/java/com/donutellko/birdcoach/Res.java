@@ -25,7 +25,7 @@ public class Res extends Thread {
 	static boolean loadedMain = false, resizedMain = false, loadedAnother, resizedAnother;
 	static Bitmap
 			  backSky, backHills, backWeed, wire,
-			  forwardMain, forwardMenu,forwardVictory, forwardLoose,
+			  forwardMain, forwardMenu,forwardVictory, forwardLose,
 			  allBirds, lifesBitmap, fantom, note, megaphone, bush,
 			  birdBitmaps[][] = new Bitmap[mainView.BIRDS_BITMAP_COLUMNS][mainView.BIRDS_BITMAP_STRINGS];
 
@@ -33,7 +33,7 @@ public class Res extends Thread {
 			  animMain = new Bitmap[4],
 			  animMenu = new Bitmap[3],
 			  animVictory = new Bitmap[2];
-			  // animLoose = new Bitmap[2];
+			  // animLose = new Bitmap[2];
 
 	public static MediaPlayer player;
 
@@ -57,7 +57,7 @@ public class Res extends Thread {
 
 		player = MediaPlayer.create(context, R.raw.hopper);
 		player.setLooping(true);
-		if (mainView.musicBool) player.start();
+		if (Level.musicBool) player.start();
 
 		animMain[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.main_blue);
 		animMain[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.main_dark);
@@ -113,11 +113,11 @@ public class Res extends Thread {
 		animVictory[0] = resize(animVictory[0], W / 4, H / 2);
 		animVictory[1] = resize(animVictory[1], W / 4, H / 2);
 
-		forwardLoose = BitmapFactory.decodeResource(context.getResources(), R.drawable.forward_loose);
+		forwardLose = BitmapFactory.decodeResource(context.getResources(), R.drawable.forward_lose);
 		// animVictory[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange1);
 		// animVictory[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange2);
 
-		forwardLoose = resize(forwardVictory, W, H);
+		forwardLose = resize(forwardVictory, W, H);
 
 		allBirds = BitmapFactory.decodeResource(context.getResources(), R.drawable.all_birds);
 

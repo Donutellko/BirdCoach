@@ -447,7 +447,7 @@ int drawable back_sky 0x7f020047
 int drawable back_weed 0x7f020048
 int drawable bush 0x7f020049
 int drawable fantom 0x7f02004a
-int drawable forward_loose 0x7f02004b
+int drawable forward_lose 0x7f02004b
 int drawable forward_main 0x7f02004c
 int drawable forward_menu 0x7f02004d
 int drawable forward_victory 0x7f02004e

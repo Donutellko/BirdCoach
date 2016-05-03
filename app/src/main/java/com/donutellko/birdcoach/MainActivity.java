@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(new mainView(this));
 
 		ResThread = new Res();
-		ResThread.run();
+		ResThread.start();
 
 		Level.recordHard = loadScore(true);
 		Level.recordEasy = loadScore(false);
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private void pauseDialog() {
 		AlertDialog.Builder pauseDialog = new AlertDialog.Builder(MainActivity.this);
-		String[] variants = {"Продолжить", "Меню", (mainView.musicBool) ? "Выключить музыку" : "Включить музыку", "Выйти"};
+		String[] variants = {"Продолжить", "Меню", (Level.musicBool) ? "Выключить музыку" : "Включить музыку", "Выйти"};
 
 		pauseDialog.
 				  setTitle("Настройки")
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 						  } else if (which == 1) {
 							  State.state = (State.state == States.GAME) ? States.GAME_MENU : States.LEVEL_MENU;
 						  } else if (which == 2) {
-							  mainView.musicBool = !mainView.musicBool;
+							  Level.musicBool = !Level.musicBool;
 						  } else finish();
 					  }
 				  });

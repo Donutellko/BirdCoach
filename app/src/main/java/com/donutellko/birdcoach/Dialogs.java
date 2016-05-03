@@ -81,7 +81,7 @@ public class Dialogs {
 		AlertDialog.Builder settingsDialog = new AlertDialog.Builder(mainView.context);
 
 		String settings[] = new String[3];
-		settings[0] = (mainView.musicBool) ? "Выключить музыку" : "Включить музыку";
+		settings[0] = (Level.musicBool) ? "Выключить музыку" : "Включить музыку";
 		settings[1] = (Level.hardBool) ? "Текущая сложность: Маэстро" : "Текущая сложность: Новичок";
 		settings[2] = "Закрыть";
 
@@ -92,12 +92,18 @@ public class Dialogs {
 				  .setItems(settings, new DialogInterface.OnClickListener() {
 					  @Override
 					  public void onClick(DialogInterface dialog, int which) {
-						  if (which == 0) mainView.musicBool = !mainView.musicBool;
+						  if (which == 0) Level.musicBool = !Level.musicBool;
 						  else if (which == 1) Level.hardBool = !Level.hardBool;
 						  else dialog.cancel();
 					  }
 				  });
 		AlertDialog alert = settingsDialog.create();
 		alert.show();
+	}
+
+	static void writeComment() {
+		float textX = mainView.forwardX + ((State.state == States.LEVEL || State.MovingFrom() == States.LEVEL) ? 0 : mainView.Width);
+		mainView.sCanvas.drawText(Level.comment, textX + mainView.Width * 7 / 16, mainView.Height * 0.55f, Res.textComment);
+		mainView.sCanvas.drawText(Level.scoresText(), textX + 30, mainView.Height - mainView.Height / 18, Res.textInfo);
 	}
 }

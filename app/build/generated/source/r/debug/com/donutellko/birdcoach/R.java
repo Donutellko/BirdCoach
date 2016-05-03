@@ -1599,7 +1599,7 @@ containing a value of this type.
         public static final int back_weed=0x7f020048;
         public static final int bush=0x7f020049;
         public static final int fantom=0x7f02004a;
-        public static final int forward_loose=0x7f02004b;
+        public static final int forward_lose=0x7f02004b;
         public static final int forward_main=0x7f02004c;
         public static final int forward_menu=0x7f02004d;
         public static final int forward_victory=0x7f02004e;

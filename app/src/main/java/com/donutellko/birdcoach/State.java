@@ -54,7 +54,7 @@ public class State {
 		else if (MovingFrom() == States.GAME)
 			drawB(Res.bush, forwardX, 0);
 		else if (MovingFrom() == States.LEVEL)
-			drawB((victory) ? Res.forwardVictory : Res.forwardLoose, forwardX, 0);
+			drawB((victory) ? Res.forwardVictory : Res.forwardLose, forwardX, 0);
 
 		if (MovingTo() == States.MAIN)
 			drawB(Res.forwardMain, forwardX + Width, 0);
@@ -63,7 +63,7 @@ public class State {
 		else if (MovingTo() == States.GAME)
 			drawB(Res.bush, forwardX + Width, 0);
 		else if (MovingTo() == States.LEVEL)
-			drawB((victory) ? Res.forwardVictory : Res.forwardLoose, forwardX + Width, 0);
+			drawB((victory) ? Res.forwardVictory : Res.forwardLose, forwardX + Width, 0);
 	}
 
 
@@ -104,6 +104,10 @@ public class State {
 
 	public static void drawB(Bitmap res, float x, float y) {
 		mainView.sCanvas.drawBitmap(res, x, y, Res.paint);
+	}
+
+	public static States getState() {
+		return state;
 	}
 }
 
