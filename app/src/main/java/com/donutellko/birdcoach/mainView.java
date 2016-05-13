@@ -1,8 +1,8 @@
 package com.donutellko.birdcoach;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,7 +23,9 @@ public class mainView extends View {
 
 	static int Width, Height;
 
-	static float Xspeed, Xacc, forwardX;
+	static float
+			  forwardX, Xspeed, Xacc,
+			  forwardY, Yspeed, Yacc;
 
 	static int[] drawCounter = new int[10];
 	static float deltaX, deltaY;
@@ -42,11 +44,6 @@ public class mainView extends View {
 		super(context);
 
 		mainView.context = context;
-
-		LevelThread = new Level("LevelThread");
-		LevelThread.start();
-
-		new Timer(100000000000000L, 10).start();
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -64,23 +61,26 @@ public class mainView extends View {
 
 		sky = new backElement(Res.backSky, 0, -1);
 		hills = new backElement(Res.backHills, Height - Width * 650 / 1920, 0.5f);
-		weed = new backElement(Res.backWeed, Height - Width * 295 / 1920, 0.9f);
+		weed = new backElement(Res.backWeed, Height - Width * 295 / 1920, 1f);
 		wire = new backElement(Res.wire, 0, 1.0f);
 
 		screenMain = new forwElement(Res.forwardMain, 0, 0);
 		screenMenu = new forwElement(Res.forwardMenu, 0, 0);
+		screenGame = new forwElement(Res.forwardGame, 0, 0);
 		screenVictory = new forwElement(Res.forwardVictory, 0, 0);
 		screenLose = new forwElement(Res.forwardLose, 0, 0);
 
 		gameMp = new forwElement(Res.megaphone, Width - 3 * BIRDS_WIDTH, Height - BIRDS_HEIGHT * 3, BIRDS_HEIGHT * 3 * 650 / 750, BIRDS_HEIGHT * 3);
 		gameNote = new forwElement(Res.note, Width / 2 - BIRDS_WIDTH / 4, Height / 20, BIRDS_HEIGHT * 2 / 3, BIRDS_HEIGHT * 2 / 3);
-		gameBush = new forwElement(Res.bush, Width - 4 * BIRDS_WIDTH, Height * 8 / 11, w, h);
+		gameBush = new forwElement(Res.forwardGame, Width - 4 * BIRDS_WIDTH, Height * 8 / 11, w, h);
 
 		Xacc = -Width / 1000;
+		Yacc = Height / 600;
 
-		Log.i("onSizeChanged: ", "Screen:\t" + Width + "x" + Height);
-		Log.i("onSizeChanged: ", "Birds:\t" + BIRDS_WIDTH + "x" + BIRDS_HEIGHT);
-		Log.i("onSizeChanged: ", "Xacc:\t" + Xacc);
+		LevelThread = new Level("LevelThread");
+		LevelThread.start();
+
+		new Timer(100000000000000L, 10).start();
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -91,13 +91,39 @@ public class mainView extends View {
 		weed.draw();
 		wire.draw();
 
-		State.draw();
+		if (State.MovingFrom() != null)
+		switch (State.MovingFrom()) {
+			case MAIN: screenMain.draw(); break;
+			case MENU:
+			case RULES:
+			case SETTINGS:
+				screenMenu.draw(); break;
+			case GAME: screenGame.draw(); break;
+			case LEVEL:
+				if (State.victoryBool) screenVictory.draw();
+				else screenLose.draw();
+				 break;
+		}
+
+		if (State.MovingTo() != null)
+		switch (State.MovingTo()) {
+			case MAIN: screenMain.draw(+ Width); break;
+			case MENU: screenMenu.draw(Width); break;
+			case RULES: screenMenu.draw(); break;
+			case SETTINGS: screenMenu.draw(); break;
+			case GAME: screenGame.draw(+ Width); break;
+			case LEVEL:
+				if (State.victoryBool) screenVictory.draw(+ Width);
+				else screenLose.draw(+ Width);
+				break;
+		}
+
 		State.animate(drawCounter);
 
-		if (State.MovingTo() == States.GAME || State.MovingFrom() == States.GAME)
+		if (State.CheckToFrom(States.GAME));
 			for (Birds b : birds) b.drawBird(canvas);
 
-		if (State.MovingTo() == States.LEVEL || State.MovingFrom() == States.LEVEL)
+		if (State.CheckToFrom(States.LEVEL))
 			Dialogs.writeComment();
 
 
@@ -131,10 +157,15 @@ public class mainView extends View {
 				Level.newGame();
 				State.state = States.MENU_GAME;
 			} else if (x > Width * 2 / 11 && x < Width * 35 / 110 && y > Height * 20 / 65 && y < Height * 35 / 65)
-				Dialogs.rules();
+				State.state = States.MENU_RULES;
 			else if (x > Width * 6 / 11 && x < Width * 7 / 11 && y > Height * 20 / 65 && y < Height * 35 / 65)
-				Dialogs.settings();
+				State.state = States.MENU_SETTINGS;
 		}
+
+		if (State.state == States.RULES && event.getAction() == MotionEvent.ACTION_DOWN)
+			State.state = States.RULES_MENU;
+		else if (State.state == States.SETTINGS && event.getAction() == MotionEvent.ACTION_DOWN)
+			State.state = States.SETTINGS_MENU;
 
 		if (State.state == States.GAME) {
 			switch (event.getAction()) {
@@ -177,7 +208,7 @@ public class mainView extends View {
 		}
 
 		if (State.state == States.LEVEL) {
-			if (State.victory) Level.nextLevel();
+			if (!State.victoryBool) Level.nextLevel();
 			else Level.newGame();
 
 			State.state = States.LEVEL_GAME;
@@ -197,7 +228,10 @@ public class mainView extends View {
 		@Override
 		public void onTick(long millisUntilFinished) {
 			c++;
-			if (State.state == States.GAME && Level.timeBool && c == 100) Level.time++;
+			if (State.state == States.GAME && Level.timeBool && c % 50 == 0) {
+				Level.time--;
+				Log.i("sgjsfkfjjhtrvhbyjjhdfvh", "Time: " + Level.time);
+			}
 
 			if (Res.player != null) {
 				if (Res.player.isPlaying()) {
@@ -207,27 +241,57 @@ public class mainView extends View {
 					Res.player.start();
 			}
 
-			sky.move();
+			sky.moveX();
 
 			for (int i = 0; i < drawCounter.length; i++)
 				drawCounter[i] += (drawCounter[i] < 200) ? -1 : 100;
 
 			if (State.isMoving()) {
+				boolean MR = false, MS = false, RM = false, SM = false;
+				switch (State.state) {
+					case MENU_RULES: MR = true; break;
+					case MENU_SETTINGS: MS = true; break;
+					case RULES_MENU: RM = true; break;
+					case SETTINGS_MENU: SM = true; break;
+				}
 
-				hills.move();
-				weed.move();
-				wire.move();
-				forwardX += Xspeed;
+				if (MR || MS || RM || SM) {
+					if (MR || MS) {
+						if (forwardY >= Height * 0.66) {
+							State.state = (MR) ? States.RULES : States.SETTINGS;
+							Yspeed = 0;
+						}
+						if (forwardY < Height / 3) Yspeed += Yacc;
+						else Yspeed = (Yspeed <= 1) ? 1 : Yspeed - Yacc;
+					} else {
+						if (forwardY <= 0) {
+							State.state = States.MENU;
+							forwardY = 0;
+						}
+						if (forwardY > Height / 3) Yspeed -= Yacc;
+						else if (Yspeed < -2) Yspeed += Yacc;
+					}
 
-				if (forwardX <= -Width
-					//(int) forwardX / 10 == -Width / 10 && forwardX < Width / 2
-						  ) {
-					Xspeed = 0;
-					forwardX = 0;
-					State.state = State.MovingTo();
+					forwardY += Yspeed;
+					sky.moveY();
+					hills.moveY();
+					weed.moveY();
+					wire.moveY(); 
+					screenMenu.moveY();
 				} else {
-					if (forwardX > -Width / 2) Xspeed += Xacc;
-					else Xspeed = (Xspeed >= -2) ? -2 : Xspeed - Xacc;
+					hills.moveX();
+					weed.moveX();
+					wire.moveX();
+					forwardX += Xspeed;
+
+					if (forwardX <= -Width) {
+						Xspeed = 0;
+						forwardX = 0;
+						State.state = State.MovingTo();
+					} else {
+						if (forwardX > -Width / 2) Xspeed += Xacc;
+						else Xspeed = (Xspeed >= -2) ? -2 : Xspeed - Xacc;
+					}
 				}
 			}
 

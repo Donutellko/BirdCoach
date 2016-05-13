@@ -25,8 +25,8 @@ public class Res extends Thread {
 	static boolean loadedMain = false, resizedMain = false, loadedAnother, resizedAnother;
 	static Bitmap
 			  backSky, backHills, backWeed, wire,
-			  forwardMain, forwardMenu,forwardVictory, forwardLose,
-			  allBirds, lifesBitmap, fantom, note, megaphone, bush,
+			  forwardMain, forwardMenu,forwardVictory, forwardLose, forwardGame,
+			  allBirds, lifesBitmap, fantom, note, megaphone,
 			  birdBitmaps[][] = new Bitmap[mainView.BIRDS_BITMAP_COLUMNS][mainView.BIRDS_BITMAP_STRINGS];
 
 	static Bitmap[]
@@ -74,7 +74,7 @@ public class Res extends Thread {
 		H = mainView.Height;
 		W = mainView.Width;
 
-		backSky = resize(backSky, W, W * 675 / 1920);
+		backSky = resize(backSky, W , H /* W * 675 / 1920 */);
 		backHills = resize(backHills, W, W * 480 / 1920);
 		backWeed = resize(backWeed, W, W * 295 / 1920);
 		wire = resize(wire, W, H);
@@ -99,29 +99,31 @@ public class Res extends Thread {
 		animMenu[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.menu_green);
 		animMenu[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.menu_purple1);
 		animMenu[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.menu_purple2);
-
 		forwardMenu = resize(forwardMenu, W, H);
 		animMenu[0] = resize(animMenu[0], W / 4, H / 2);
 		animMenu[1] = resize(animMenu[1], W / 4, H / 2);
 		animMenu[2] = resize(animMenu[2], W / 4, H / 2);
 
+		forwardGame = BitmapFactory.decodeResource(context.getResources(), R.drawable.bush);
+		forwardGame = resize(forwardGame, W, H);
+
 		forwardVictory = BitmapFactory.decodeResource(context.getResources(), R.drawable.forward_victory);
 		animVictory[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange1);
 		animVictory[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange2);
-
 		forwardVictory = resize(forwardVictory, W, H);
 		animVictory[0] = resize(animVictory[0], W / 4, H / 2);
 		animVictory[1] = resize(animVictory[1], W / 4, H / 2);
 
 		forwardLose = BitmapFactory.decodeResource(context.getResources(), R.drawable.forward_lose);
-		// animVictory[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange1);
-		// animVictory[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange2);
-
-		forwardLose = resize(forwardVictory, W, H);
+		// animLose[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange1);
+		// animLose[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scr3_orange2);
+		forwardLose = resize(forwardLose, W, H);
+		// animLose[0] = resize(animLose[0], W / 4, H / 2);
+		// animLose[1] = resize(animLose[1], W / 4, H / 2);
 
 		allBirds = BitmapFactory.decodeResource(context.getResources(), R.drawable.all_birds);
-
 		allBirds = resize(allBirds, bW * 9, bH * 6);
+
 		for (int type = 0; type < mainView.BIRDS_BITMAP_COLUMNS; type++)
 			for (int pose = 0; pose < mainView.BIRDS_BITMAP_STRINGS; pose++)
 				birdBitmaps[type][pose] = createBitmap(allBirds, bW * type, bH * pose, bW, bH);
@@ -130,13 +132,11 @@ public class Res extends Thread {
 		megaphone = BitmapFactory.decodeResource(context.getResources(), R.drawable.megafon);
 		fantom = BitmapFactory.decodeResource(context.getResources(), R.drawable.fantom);
 		note = BitmapFactory.decodeResource(context.getResources(), R.drawable.note);
-		bush = BitmapFactory.decodeResource(context.getResources(), R.drawable.bush);
 
 		lifesBitmap = resize(lifesBitmap, bH / 2, bH / 2);
 		megaphone = resize(megaphone, bH * 3 * 650 / 750, bH * 3);
 		fantom = resize(fantom, bW, bH);
 		note = resize(note, bH * 2 / 3, bH * 2 / 3);
-		bush = resize(bush, W, H);
 
 		loadSounds();
 
@@ -161,12 +161,12 @@ public class Res extends Thread {
 		textInfo.setTextAlign(Paint.Align.LEFT);
 		textInfo.setTypeface(type);
 
-		textTime.setColor(0xffff0000);
+		// textTime.setColor(0xffff0000); - теперь в level.timeText();
 		textTime.setTextSize(mainView.Height / 24);
 		textTime.setTextAlign(Paint.Align.LEFT);
 		textTime.setTypeface(type);
 
-		textScores.setColor(0xffff0000);
+		textScores.setColor(0xFFFF5511);
 		textScores.setTextSize(mainView.Height / 24);
 		textScores.setTextAlign(Paint.Align.LEFT);
 		textScores.setTypeface(type);
@@ -175,14 +175,16 @@ public class Res extends Thread {
 	public static void loadSounds() {
 		sounds = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 		mistakeSound = sounds.load(context, R.raw.mistake, 1);
+
 		birdSounds[0] = sounds.load(context, R.raw.s1c, 1);
 		birdSounds[1] = sounds.load(context, R.raw.s1d, 1);
 		birdSounds[2] = sounds.load(context, R.raw.s1e, 1);
 		birdSounds[3] = sounds.load(context, R.raw.s1f, 1);
 		birdSounds[4] = sounds.load(context, R.raw.s1g, 1);
+
 		birdSounds[5] = sounds.load(context, R.raw.s2a, 1);
 		birdSounds[6] = sounds.load(context, R.raw.s2b, 1);
 		birdSounds[7] = sounds.load(context, R.raw.s2c, 1);
-		birdSounds[8] = sounds.load(context, R.raw.s2e, 1);
+		birdSounds[8] = sounds.load(context, R.raw.s2d, 1);
 	}
 }

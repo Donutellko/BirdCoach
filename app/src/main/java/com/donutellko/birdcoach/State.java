@@ -5,73 +5,93 @@ import android.graphics.Bitmap;
 public class State {
 
 	public static States state = States.MAIN;
-	public static boolean victory = true;
+	public static boolean victoryBool = true;
 
 	public State() {
 		super();
 	}
 
 	public static boolean isMoving() {
-		return !(state == States.MAIN || state == States.MENU || state == States.GAME || state == States.LEVEL);
+		return !(state == States.MAIN || state == States.MENU || state == States.GAME || state == States.LEVEL || state == States.SETTINGS || state == States.RULES);
 	}
 
 	public static States MovingTo() {
 		if (!isMoving()) return state;
+		States result = null;
 
-		if (state == States.MAIN_MENU || state == States.GAME_MENU || state == States.LEVEL_MENU)
-			return States.MENU;
-		else if (state == States.MENU_GAME || state == States.LEVEL_GAME)
-			return States.GAME;
-		else if (state == States.GAME_LEVEL)
-			return States.LEVEL;
-		else if (state == States.MENU_MAIN)
-			return States.MAIN;
-		else return null;
+		switch (state) {
+			case MAIN_MENU: case RULES_MENU: case SETTINGS_MENU: case LEVEL_MENU: case GAME_MENU:
+				result = States.MENU; break;
+			case MENU_GAME: case LEVEL_GAME:
+				result = States.GAME; break;
+			case GAME_LEVEL:
+				result = States.LEVEL; break;
+			case MENU_MAIN:
+				result = States.MAIN; break;
+			case MENU_SETTINGS:
+				result = States.SETTINGS; break;
+			case MENU_RULES:
+				result = States.RULES; break;
+		}
+
+		return result;
 	}
 
 	public static States MovingFrom() {
+		States result = null;
+
 		if (!isMoving()) return state;
+		else if (state  != null) {
 
-		if (state == States.MAIN_MENU)
-			return States.MAIN;
-		else if (state == States.MENU_GAME || state == States.MENU_MAIN)
-			return States.MENU;
-		else if (state == States.GAME_LEVEL || state == States.GAME_MENU)
-			return States.GAME;
-		else if (state == States.LEVEL_GAME || state == States.LEVEL_MENU)
-			return States.LEVEL;
-		else return null;
+			switch (state) {
+				case MAIN_MENU:
+					result = States.MAIN;
+					break;
+
+				case MENU_GAME:
+				case MENU_MAIN:
+					result = States.MENU;
+					break;
+
+				case GAME_LEVEL:
+				case GAME_MENU:
+					result = States.GAME;
+					break;
+
+				case LEVEL_GAME:
+				case LEVEL_MENU:
+					result = States.LEVEL;
+					break;
+
+				case SETTINGS_MENU:
+					result = States.SETTINGS;
+					break;
+
+				case RULES_MENU:
+					result = States.RULES;
+					break;
+			}
+		}
+		return result;
 	}
 
-	public static void draw() {
-		float forwardX = mainView.forwardX;
-		float Width = mainView.Width;
-
-		if (MovingFrom() == States.MAIN)
-			drawB(Res.forwardMain, forwardX, 0);
-		else if (MovingFrom() == States.MENU)
-			drawB(Res.forwardMenu, forwardX, 0);
-		else if (MovingFrom() == States.GAME)
-			drawB(Res.bush, forwardX, 0);
-		else if (MovingFrom() == States.LEVEL)
-			drawB((victory) ? Res.forwardVictory : Res.forwardLose, forwardX, 0);
-
-		if (MovingTo() == States.MAIN)
-			drawB(Res.forwardMain, forwardX + Width, 0);
-		else if (MovingTo() == States.MENU)
-			drawB(Res.forwardMenu, forwardX + Width, 0);
-		else if (MovingTo() == States.GAME)
-			drawB(Res.bush, forwardX + Width, 0);
-		else if (MovingTo() == States.LEVEL)
-			drawB((victory) ? Res.forwardVictory : Res.forwardLose, forwardX + Width, 0);
+	public static boolean CheckTo(States st) {
+		return MovingTo() == st;
 	}
 
+	public static boolean CheckFrom(States st) {
+		return MovingFrom() == st;
+	}
+
+	public static boolean CheckToFrom(States st) {
+		return MovingTo() == st || MovingFrom() == st;
+	}
 
 	public static void animate(int[] drawCounter) {
 		float forwardX = mainView.forwardX;
 		float Width = mainView.Width, Height = mainView.Height;
 
-		if (State.MovingFrom() == States.MAIN || State.MovingTo() == States.MAIN) {
+		if (State.CheckToFrom(States.MAIN)) {
 			float x = (State.MovingFrom() == States.MAIN) ? forwardX : forwardX + Width;
 
 			if (drawCounter[0] > 0) drawB(Res.animMain[0], x, 0);
@@ -86,8 +106,8 @@ public class State {
 			mainView.sCanvas.drawText((Res.loadedMain) ? "Нажмите, чтобы продолжить..." : "Подождите...", x + 30, Height - Height / 22, Res.textInfo);
 		}
 
-		if (State.MovingFrom() == States.MENU || State.MovingTo() == States.MENU || State.MovingFrom() == States.LEVEL || State.MovingTo() == States.LEVEL) {
-			float x = (State.MovingFrom() == States.MENU || State.MovingFrom() == States.LEVEL) ? forwardX : forwardX + Width;
+		if (CheckToFrom(States.MENU) || CheckToFrom(States.LEVEL) || CheckToFrom(States.SETTINGS) || CheckToFrom(States.RULES)) {
+			float x = (CheckFrom(States.MENU) || CheckFrom(States.LEVEL) || CheckToFrom(States.SETTINGS) || CheckToFrom(States.RULES)) ? forwardX : forwardX + Width;
 
 			if (drawCounter[4] < -30) drawCounter[4] = 30;
 			drawB((drawCounter[4] > 0) ? Res.animVictory[0] : Res.animVictory[1], x + Width / 4, 5);
@@ -103,7 +123,7 @@ public class State {
 	}
 
 	public static void drawB(Bitmap res, float x, float y) {
-		mainView.sCanvas.drawBitmap(res, x, y, Res.paint);
+		mainView.sCanvas.drawBitmap(res, x, mainView.forwardY + y, Res.paint);
 	}
 
 	public static States getState() {
@@ -114,6 +134,7 @@ public class State {
 enum States {
 	MAIN, MAIN_MENU,
 	MENU, MENU_GAME, MENU_MAIN,
+	RULES, SETTINGS, MENU_RULES, MENU_SETTINGS, RULES_MENU, SETTINGS_MENU,
 
 	GAME, GAME_LEVEL, GAME_MENU,
 	LEVEL, LEVEL_GAME, LEVEL_MENU

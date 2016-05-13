@@ -32,6 +32,13 @@ public class Birds {
 			if (poseTimer != 0)
 				poseTimer--;
 			else {
+				int h = mainView.Height;
+				int w = mainView.Width;
+				if (y < h * 1.5/6 || y > h * 2/6 && (x < w * 1/11|| x > w * 7/11)) {
+					pose = (random.nextInt(2) % 2 == 1) ? 0: 1;
+					poseTimer = 10;
+				}
+
 				pose = random.nextInt(3);
 				if (pose == 0) poseTimer = 50;
 				else poseTimer = 10;
@@ -43,9 +50,10 @@ public class Birds {
 			if (State.state == States.GAME) xw = 0;
 			else if (State.MovingTo() == States.GAME) xw = mainView.forwardX + mainView.Width;
 			else if (State.MovingFrom() == States.GAME) xw = mainView.forwardX;
+			else xw = -mainView.Width;
 		}
 
-		canvas.drawBitmap(Res.birdBitmaps[type][pose], xw + x, y, paint);
+		if (State.CheckToFrom(States.GAME)) canvas.drawBitmap(Res.birdBitmaps[type][pose], xw + x, y, paint);
 	}
 
 	public void sound() {

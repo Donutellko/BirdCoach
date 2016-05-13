@@ -27,8 +27,8 @@ public class Level extends Thread {
 	static double[] bushPlaceY = {0.767, 0.560, 0.691, 0.814, 0.612, 0.730, 0.855, 0.740, 0.582, 0.814, 0.657, 0.764};
 
 	 static int[]
-			  easySame =  {2, 0, 	2, 0, 	3, 2, 0, 	3, 2, 0, 	4, 3, 2, 0,		4, 3, 2, 0},
-			  easyCount = {3, 3, 	4, 4,		5, 5, 5, 	6, 6, 6, 	7, 7, 7, 7, 	8, 8, 8, 8};
+				easyCount = {3, 3, 	4, 4,		5, 5, 5, 	6, 6, 6, 	7, 7, 7, 7, 	8, 8, 8, 8,		9, 9, 9, 9},
+				easySame =  {2, 0, 	2, 0, 	3, 2, 0, 	3, 2, 0, 	4, 3, 2, 0,		4, 3, 2, 0,		4, 3, 2, 0};
 
 
 	static String comment;
@@ -67,25 +67,31 @@ public class Level extends Thread {
 	public static void nextLevel() {
 		level++;
 
-		double tmpX, tmpY; // Перемешивание
-		for (int i = 0; i < bushPlaceX.length; i++) {
-			int r = Level.random.nextInt(bushPlaceX.length);
+		if (true) {
+			double tmpX, tmpY; // Перемешивание
+			for (int i = 0; i < bushPlaceX.length; i++) {
+				int r = Level.random.nextInt(bushPlaceX.length);
 
-			tmpX = bushPlaceX[i];
-			tmpY = bushPlaceY[i];
+				tmpX = bushPlaceX[i];
+				tmpY = bushPlaceY[i];
 
-			bushPlaceX[i] = bushPlaceX[r];
-			bushPlaceY[i] = bushPlaceY[r];
+				bushPlaceX[i] = bushPlaceX[r];
+				bushPlaceY[i] = bushPlaceY[r];
 
-			bushPlaceX[r] = tmpX;
-			bushPlaceY[r] = tmpY;
+				bushPlaceX[r] = tmpX;
+				bushPlaceY[r] = tmpY;
+			}
+
+			melodyOrder = generateMelody(level);
+		} else {
+			melodyOrder = new int[9];
+			for (int i = 0; i < 9; i++) melodyOrder[i] = i;
 		}
 
-		melodyOrder = generateMelody(level);
 		createBirds(melodyOrder);
 
 		for (int i = 0; i < birdPlaced.length; i++) birdPlaced[i] = null;
-		time = 0;
+		time = easyCount[level] * 4;
 		timeBool = false;
 		howMushTimesYouCanListenTheMelody = melodyOrder.length * ((hardBool) ? 1 : 2);
 
@@ -120,24 +126,23 @@ public class Level extends Thread {
 	}
 
 	private static int[] generateMelody(int level) {
-		int count;
+		int count = 9;
 		int same = 0;
-
-		if (level <=  18) {
-			same = easySame[level - 1];
+		if (level < easyCount.length) {
 			count = easyCount[level - 1];
-		} else {
-			count = 9;
-			if (level <= 23) same = 9 - (level - 18);
+			same = easySame[level - 1];
 		}
+		int[] order = new int[count];
+
 
 		int s = (random.nextInt(9));
-		int[] order = new int[count];
-		for (int i = 0; i < count; i++) {
-			if (i < same) order[i] = s;
-			else order[i] = -1;
+		for (int i = 0; i < same; i++) order[i] = s;
 
-			while (order[i] == s || order[i] == -1) order[i] = (random.nextInt(9));
+		for (int i = same; i < count; i++) {
+			int r = random.nextInt(9);
+			while (r == s) r = random.nextInt(9);
+			if (i > 1) while (r == order[i - 1] || r == order[i - 2] || r == s) r = random.nextInt();
+			order[i] = r;
 		}
 
 		for (int i = 0; i < order.length; i++) {	// Перемешивание
@@ -175,13 +180,12 @@ public class Level extends Thread {
 				i++;
 			}
 			if (c == i && i == melodyOrder.length) {	// Мелодия правильная
-				comment = Level.positiveComment[Level.random.nextInt(Level.positiveComment.length)];
-
 				score += level * 100;
 				score += (time < melodyOrder.length * 5 && level != 0) ? melodyOrder.length * (melodyOrder.length * 5 - time) : 0;
 
+				com.donutellko.birdcoach.State.victoryBool = true; // Без понятия, почему не даёт просто доступ к State.victoryBool.
+				comment = Level.positiveComment[Level.random.nextInt(Level.positiveComment.length)];
 				com.donutellko.birdcoach.State.state = com.donutellko.birdcoach.States.GAME_LEVEL;
-				com.donutellko.birdcoach.State.victory = true;
 
 				Log.i("Game", "Checked " + i + " sounds, melody is right.");
 			} else {
@@ -190,7 +194,7 @@ public class Level extends Thread {
 				Res.sounds.play(Res.mistakeSound, 1.0f, 1.0f, 1, 0, 1.0f);
 				if (lifes == 0) {
 					com.donutellko.birdcoach.State.state = com.donutellko.birdcoach.States.GAME_LEVEL;
-					com.donutellko.birdcoach.State.victory = false;
+					com.donutellko.birdcoach.State.victoryBool = false;
 					if (hardBool && recordHard < score) { recordHard = score; newRecord = true; }
 					else if (!hardBool && recordEasy < score) { recordEasy = score; newRecord = true; }
 				}
@@ -201,7 +205,6 @@ public class Level extends Thread {
 	}
 
 	static void playMelody(int[] order) {
-		timeBool = true;
 		if (howMushTimesYouCanListenTheMelody != 0) {
 			howMushTimesYouCanListenTheMelody--;
 			for (int i = 0; i < order.length; i++) {
@@ -213,14 +216,14 @@ public class Level extends Thread {
 				}
 			}
 		}
+		timeBool = true;
 	}
 
 	static void playBirdSound(int type) {
 		//float speed = (float) (0.5 + (EndlessView.BIRDS_BITMAP_COLUMNS - type) * (1.5 / EndlessView.BIRDS_BITMAP_COLUMNS));
 		int sound = Res.birdSounds[mainView.BIRDS_BITMAP_COLUMNS - type - 1];
-		Res.sounds.play(sound, 1.0f, 1.0f, type, 0, 1.0f);
+		Res.sounds.play(sound, 1.0f, 1.0f, 5, 0, 1.0f);
 	}
-
 
 	public static String scoresText() {
 		String s = "";
@@ -233,8 +236,12 @@ public class Level extends Thread {
 	}
 
 	public static String timeText() {
-		String s = Level.time / 60 + ":";
-		s += (Level.time % 60 < 10) ? "0" + Level.time % 60 : Level.time % 60;
+		Res.textTime.setColor((time > 0) ? 0xFFFF5511 :  0xDDFFDD00);
+		int t = Math.abs(time);
+		String s = (time > 0) ? "" : "-";
+		s += t / 60 + ":";
+		s += ((t % 60 < 10) ? "0" : "") + t % 60;
+		// Log.i("sgjsfkfjjhtrvhbyjjhdfvh", "Time: " + Level.time + "\t " + s);
 		return s;
 	}
 }

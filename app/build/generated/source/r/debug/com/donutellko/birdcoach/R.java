@@ -1774,6 +1774,7 @@ containing a value of this type.
         public static final int s2c=0x7f060009;
         public static final int s2d=0x7f06000a;
         public static final int s2e=0x7f06000b;
+        public static final int s2g=0x7f06000c;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f070000;

@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
 		alert.show();
 	}
 
-
 	static int loadScore(boolean hard) {
 		sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
 		return sPref.getInt((hard) ? "Hard" : "Easy", 0);
@@ -104,6 +103,5 @@ public class MainActivity extends AppCompatActivity {
 		ed.putInt((hard) ? "Hard" : "Easy", score);
 		ed.apply();
 	}
-
 
 }

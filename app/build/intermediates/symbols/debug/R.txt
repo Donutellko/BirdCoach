@@ -612,6 +612,7 @@ int raw s2b 0x7f060008
 int raw s2c 0x7f060009
 int raw s2d 0x7f06000a
 int raw s2e 0x7f06000b
+int raw s2g 0x7f06000c
 int string abc_action_bar_home_description 0x7f070000
 int string abc_action_bar_home_description_format 0x7f070001
 int string abc_action_bar_home_subtitle_description_format 0x7f070002
