@@ -2,6 +2,8 @@ package com.donutellko.birdcoach;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.widget.TextView;
 
 /**
  * Created by donat on 4/21/16.
@@ -10,18 +12,42 @@ public class Dialogs {
 
 	static void nextLevel(String title, int level) {
 		AlertDialog.Builder levelDialog = new AlertDialog.Builder(mainView.context);
+		Typeface type = Typeface.createFromAsset(mainView.context.getAssets(), "comic.ttf");
 
 		Level.timeBool = false;
 		String s = "";
 
 		if (level > 1 && !(level == 5 && Level.hardBool))  {
-			s = "\nУ вас уже " + Level.score;
-			s += ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков")  +
-					  ((Level.hardBool) ?
-								 ((Level.recordHard < Level.score) ? " Предыдущий рекорд на большой сложности - " + Level.recordHard : "") :
-								 (Level.recordHard < Level.score) ? " Предыдущий рекорд на низкой сложности - " + Level.recordEasy : "" );
+			s = "\n\t\tУ вас уже " + Level.score;
+			s += ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков")  + "\n";
+			if ((Level.hardBool) ? (Level.recordHard > 0) : (Level.recordEasy > 0))
+				s+= ((Level.hardBool) ?
+						  ((Level.recordHard < Level.score) ? " Предыдущий рекорд на большой сложности - " + Level.recordHard : "") :
+						  (Level.recordHard < Level.score) ? " Предыдущий рекорд на низкой сложности - " + Level.recordEasy : "" );
 		}
 
+
+
+		TextView tv = new TextView(mainView.context);
+
+		tv.setText("\t\tУровень " + level + "\n" + s);
+		tv.setTypeface(type);
+		tv.setTextSize(mainView.Height / 35);
+
+
+		levelDialog.setView(tv)
+				  .setTitle(title)
+				  .setCancelable(false)
+				  .setIcon(R.mipmap.ic_launcher)
+				  .setNegativeButton("Начать",
+							 new DialogInterface.OnClickListener() {
+								 public void onClick(DialogInterface dialog, int id) {
+									 // Level.playMelody(Level.melodyOrder);
+									 dialog.cancel();
+								 }
+							 });
+
+		/*
 		levelDialog.setTitle(title)
 				  .setMessage("Уровень " + level + "\n" + s)
 				  .setIcon(R.mipmap.ic_launcher)
@@ -33,71 +59,10 @@ public class Dialogs {
 									 dialog.cancel();
 								 }
 							 });
+
+		*/
+
 		AlertDialog alert = levelDialog.create();
-		alert.show();
-	}
-
-	static void mistake() {
-		AlertDialog.Builder mistakeDialog = new AlertDialog.Builder(mainView.context);
-
-		mistakeDialog.setTitle("Упс!")
-				  .setMessage("Кажется, ты перепутал звуки\nПрослушай мелодию заново и попробуй ещё раз!")
-				  .setIcon(R.mipmap.ic_launcher)
-				  .setCancelable(false)
-				  .setNegativeButton("Прослушать",
-							 new DialogInterface.OnClickListener() {
-								 public void onClick(DialogInterface dialog, int id) {
-									 Level.playMelody(Level.melodyOrder);
-									 Level.timeBool = true;
-									 dialog.cancel();
-								 }
-							 });
-		mistakeDialog.show();
-	}
-
-	static void rules() {
-		AlertDialog.Builder rulesDialog = new AlertDialog.Builder(mainView.context);
-
-		rulesDialog.setTitle("Правила")
-				  .setMessage("Правила игры: \n" +
-							 "•   Ваша задача — рассадить птичек на проводе в соответствии с мелодией, которую можно услышать, нажав на мегафон в правом нижнем углу экрана. По мере игры длина мелодии увеличивается. \n" +
-							 "•   У вас есть три жизни на одну игру (право на ошибку). Оставшиеся жизни отображаются в верхнем углу экрана. \n" +
-							 "•   На каждом уровне мелодию можно прослушать вдвое больше раз, чем количество птичек, которых нужно рассадить. \n" +
-							 "•   За каждый уровень вы набираете очки (верхний правый угол), зависящие от количества прослушиваний и времени, затраченного на этот уровень (верхний левый угол, обратный отсчёт).\n" +
-							 "•   В игре есть несколько уровней сложности, он изменяется в настройках. При уровне Новичок вы начинаете играть с трёх птичек, а при уровне Маэстро - с шести.")
-				  .setIcon(R.mipmap.ic_launcher)
-				  .setCancelable(true)
-				  .setPositiveButton("Усвоил",
-							 new DialogInterface.OnClickListener() {
-								 public void onClick(DialogInterface dialog, int id) {
-									 dialog.cancel();
-								 }
-							 });
-		AlertDialog alert = rulesDialog.create();
-		alert.show();
-	}
-
-	static void settings() {
-		AlertDialog.Builder settingsDialog = new AlertDialog.Builder(mainView.context);
-
-		String settings[] = new String[3];
-		settings[0] = (Level.musicBool) ? "Выключить музыку" : "Включить музыку";
-		settings[1] = (Level.hardBool) ? "Текущая сложность: Маэстро" : "Текущая сложность: Новичок";
-		settings[2] = "Закрыть";
-
-		settingsDialog.
-				  setTitle("Настройки")
-				  .setIcon(R.mipmap.ic_launcher)
-				  .setCancelable(true)
-				  .setItems(settings, new DialogInterface.OnClickListener() {
-					  @Override
-					  public void onClick(DialogInterface dialog, int which) {
-						  if (which == 0) Level.musicBool = !Level.musicBool;
-						  else if (which == 1) Level.hardBool = !Level.hardBool;
-						  else dialog.cancel();
-					  }
-				  });
-		AlertDialog alert = settingsDialog.create();
 		alert.show();
 	}
 

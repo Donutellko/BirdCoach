@@ -21,11 +21,11 @@ public class Res extends Thread {
 	public static SoundPool sounds;
 	public static int[] birdSounds = new int[mainView.BIRDS_BITMAP_COLUMNS];
 	public static int mistakeSound;
-	static Paint paint, textComment = new Paint(), textScores = new Paint(), textTime = new Paint(), textInfo = new Paint();
+	static Paint paint, textComment = new Paint(), textScores = new Paint(), textTime = new Paint(), textInfo = new Paint(), textSettings = new Paint();
 	static boolean loadedMain = false, resizedMain = false, loadedAnother, resizedAnother;
 	static Bitmap
 			  backSky, backHills, backWeed, wire,
-			  forwardMain, forwardMenu,forwardVictory, forwardLose, forwardGame,
+			  forwardMain, forwardMenu,forwardVictory, forwardLose, forwardGame, forwardRules,
 			  allBirds, lifesBitmap, fantom, note, megaphone,
 			  birdBitmaps[][] = new Bitmap[mainView.BIRDS_BITMAP_COLUMNS][mainView.BIRDS_BITMAP_STRINGS];
 
@@ -104,6 +104,9 @@ public class Res extends Thread {
 		animMenu[1] = resize(animMenu[1], W / 4, H / 2);
 		animMenu[2] = resize(animMenu[2], W / 4, H / 2);
 
+		forwardRules = BitmapFactory.decodeResource(context.getResources(), R.drawable.rules);
+		forwardRules = resize(forwardRules, W, H);
+
 		forwardGame = BitmapFactory.decodeResource(context.getResources(), R.drawable.bush);
 		forwardGame = resize(forwardGame, W, H);
 
@@ -170,6 +173,11 @@ public class Res extends Thread {
 		textScores.setTextSize(mainView.Height / 24);
 		textScores.setTextAlign(Paint.Align.LEFT);
 		textScores.setTypeface(type);
+
+		textSettings.setColor(0xFFFF9900);
+		textSettings.setTextSize(mainView.Height / 22);
+		textSettings.setTextAlign(Paint.Align.LEFT);
+		textSettings.setTypeface(type);
 	}
 
 	public static void loadSounds() {

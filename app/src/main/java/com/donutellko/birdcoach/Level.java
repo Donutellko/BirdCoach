@@ -65,7 +65,9 @@ public class Level extends Thread {
 	}
 
 	public static void nextLevel() {
+		Log.i("", "Level1 + " + level);
 		level++;
+		Log.i("", "Level1 + " + level);
 
 		if (true) {
 			double tmpX, tmpY; // Перемешивание
@@ -154,6 +156,15 @@ public class Level extends Thread {
 
 		Log.i("Game", "Level " + level + ". Generated melody of " + count + " sounds with " + same + " similar. ");
 
+		for (int i = 0; i < order.length; i++) {
+			Log.i("Order: ", i + ": " + order[i]);
+		}
+
+		// КОСТЫЛЬ
+		for (int i = 0; i < order.length; i++)
+			if (order[i] < 0 || order[i] > 9)
+				return(generateMelody(level));
+
 		return order;
 	}
 
@@ -227,16 +238,18 @@ public class Level extends Thread {
 
 	public static String scoresText() {
 		String s = "";
-		if (newRecord && ((hardBool) ? recordEasy : recordHard) != 0) s += "Новый рекорд! ";
+		if (score > ((hardBool) ? recordEasy : recordHard)) s += "Новый рекорд! ";
 		s += score + ((score % 10 < 4 && score != 0 && (score < 5 || score > 20)) ? " очка!" : " очков!");
-		if (hardBool && recordHard != 0) s += "Рекорд - " + recordHard + ".";
-		if (!hardBool && recordEasy != 0) s += "Рекорд - " + recordEasy + ".";
+		if (score < ((hardBool) ? recordEasy : recordHard)) {
+			if (hardBool && recordHard != 0) s += " Рекорд - " + recordHard + ".";
+			if (!hardBool && recordEasy != 0) s += " Рекорд - " + recordEasy + ".";
+		}
 
 		return s;
 	}
 
 	public static String timeText() {
-		Res.textTime.setColor((time > 0) ? 0xFFFF5511 :  0xDDFFDD00);
+		Res.textTime.setColor((time > 0) ? 0xFFFF5511 :  0xFFFFDD00);
 		int t = Math.abs(time);
 		String s = (time > 0) ? "" : "-";
 		s += t / 60 + ":";

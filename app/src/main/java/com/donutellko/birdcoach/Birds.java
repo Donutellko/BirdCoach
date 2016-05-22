@@ -52,8 +52,9 @@ public class Birds {
 			else if (State.MovingFrom() == States.GAME) xw = mainView.forwardX;
 			else xw = -mainView.Width;
 		}
-
-		if (State.CheckToFrom(States.GAME)) canvas.drawBitmap(Res.birdBitmaps[type][pose], xw + x, y, paint);
+		if (type > 10 || type < 0) type = 0;
+		if (State.CheckToFrom(States.GAME)) canvas.drawBitmap(Res.birdBitmaps[type]
+				  [pose], xw + x, y, paint);
 	}
 
 	public void sound() {

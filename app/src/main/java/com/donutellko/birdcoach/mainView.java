@@ -31,7 +31,7 @@ public class mainView extends View {
 	static float deltaX, deltaY;
 	float startX, startY;
 
-	static forwElement screenMain, screenMenu, screenGame, screenVictory, screenLose;
+	static forwElement screenMain, screenMenu, screenRules, screenGame, screenVictory, screenLose;
 	static forwElement gameMp, gameNote, gameBush;
 	static backElement hills, weed, wire, sky = new backElement(null, 0, -1);
 
@@ -44,6 +44,8 @@ public class mainView extends View {
 		super(context);
 
 		mainView.context = context;
+
+		new Timer(100000000000000L, 10).start();
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -69,6 +71,8 @@ public class mainView extends View {
 		screenGame = new forwElement(Res.forwardGame, 0, 0);
 		screenVictory = new forwElement(Res.forwardVictory, 0, 0);
 		screenLose = new forwElement(Res.forwardLose, 0, 0);
+		screenRules = new forwElement(Res.forwardRules, 0, (int) (- Height * 0.66));
+
 
 		gameMp = new forwElement(Res.megaphone, Width - 3 * BIRDS_WIDTH, Height - BIRDS_HEIGHT * 3, BIRDS_HEIGHT * 3 * 650 / 750, BIRDS_HEIGHT * 3);
 		gameNote = new forwElement(Res.note, Width / 2 - BIRDS_WIDTH / 4, Height / 20, BIRDS_HEIGHT * 2 / 3, BIRDS_HEIGHT * 2 / 3);
@@ -80,7 +84,6 @@ public class mainView extends View {
 		LevelThread = new Level("LevelThread");
 		LevelThread.start();
 
-		new Timer(100000000000000L, 10).start();
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -95,9 +98,8 @@ public class mainView extends View {
 		switch (State.MovingFrom()) {
 			case MAIN: screenMain.draw(); break;
 			case MENU:
-			case RULES:
-			case SETTINGS:
-				screenMenu.draw(); break;
+			case RULES: screenMenu.draw(); screenRules.draw(0, (int)(-Height * 0.66)); break;
+			case SETTINGS: screenMenu.draw(); break;
 			case GAME: screenGame.draw(); break;
 			case LEVEL:
 				if (State.victoryBool) screenVictory.draw();
@@ -109,7 +111,7 @@ public class mainView extends View {
 		switch (State.MovingTo()) {
 			case MAIN: screenMain.draw(+ Width); break;
 			case MENU: screenMenu.draw(Width); break;
-			case RULES: screenMenu.draw(); break;
+			case RULES: screenMenu.draw(); screenRules.draw(0, (int)(-Height * 0.66)); break;
 			case SETTINGS: screenMenu.draw(); break;
 			case GAME: screenGame.draw(+ Width); break;
 			case LEVEL:
@@ -126,6 +128,16 @@ public class mainView extends View {
 		if (State.CheckToFrom(States.LEVEL))
 			Dialogs.writeComment();
 
+		if (State.CheckToFrom(States.SETTINGS)) {
+			float plusY = (float) (forwardY - Height * 0.6);
+			int x = Width / 2;
+			int mult = Height / 11;
+			canvas.drawText("BirdCoach v1.5 by Donutellko (donutellko@gmail.com; github.com/Donutellko).", 20, plusY + 20, Res.textSettings);
+			canvas.drawText((Level.musicBool ? "Вы" : "В") + "ключить музыку", 				 	 x, plusY + mult * 3, Res.textSettings);
+			canvas.drawText("Обнулить таблицу рекордов",												  	 x, plusY + mult * 4, Res.textSettings);
+			canvas.drawText("Текущая сложность: " + (Level.hardBool ? "Маэстро" : "Новичок"), x, plusY + mult * 5, Res.textSettings);
+			canvas.drawText("Назад", 																			 x, plusY + mult * 6, Res.textSettings);
+		}
 
 		if (State.state == States.GAME) {
 			canvas.drawText("Score: " + Level.score, Height / 30, Height / 30, Res.textScores);
@@ -164,8 +176,8 @@ public class mainView extends View {
 
 		if (State.state == States.RULES && event.getAction() == MotionEvent.ACTION_DOWN)
 			State.state = States.RULES_MENU;
-		else if (State.state == States.SETTINGS && event.getAction() == MotionEvent.ACTION_DOWN)
-			State.state = States.SETTINGS_MENU;
+//		else if (State.state == States.SETTINGS && event.getAction() == MotionEvent.ACTION_DOWN)
+//			State.state = States.SETTINGS_MENU;
 
 		if (State.state == States.GAME) {
 			switch (event.getAction()) {
@@ -207,8 +219,21 @@ public class mainView extends View {
 			}
 		}
 
+		if (State.state == States.SETTINGS && event.getAction() == MotionEvent.ACTION_UP) {
+			if (y > Height / 11 * 3 && y < Height / 11 * 4) {
+				Level.musicBool = !Level.musicBool;
+			} else if (y > Height / 11 * 4 && y < Height / 11 * 5) {
+				Level.recordEasy = 0;
+				Level.recordHard = 0;
+			} else if (y > Height / 11 * 5 && y < Height / 11 * 6) {
+				Level.hardBool = !Level.hardBool;
+			} else if (y > Height / 11 * 6 && y < Height / 11 * 7) {
+				State.state = States.SETTINGS_MENU;
+			}
+		}
+
 		if (State.state == States.LEVEL) {
-			if (!State.victoryBool) Level.nextLevel();
+			if (State.victoryBool) Level.nextLevel();
 			else Level.newGame();
 
 			State.state = States.LEVEL_GAME;
@@ -230,7 +255,7 @@ public class mainView extends View {
 			c++;
 			if (State.state == States.GAME && Level.timeBool && c % 50 == 0) {
 				Level.time--;
-				Log.i("sgjsfkfjjhtrvhbyjjhdfvh", "Time: " + Level.time);
+				// Log.i("sgjsfkfjjhtrvhbyjjhdfvh", "Time: " + Level.time);
 			}
 
 			if (Res.player != null) {
@@ -278,6 +303,7 @@ public class mainView extends View {
 					weed.moveY();
 					wire.moveY(); 
 					screenMenu.moveY();
+					screenRules.moveY();
 				} else {
 					hills.moveX();
 					weed.moveX();

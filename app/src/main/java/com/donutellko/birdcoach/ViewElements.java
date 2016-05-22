@@ -66,6 +66,10 @@ public class ViewElements {
 			mainView.sCanvas.drawBitmap(bitmap, X + mainView.forwardX, Y, Res.paint);
 		}
 
+		void draw(int plusX, int plusY) {
+			mainView.sCanvas.drawBitmap(bitmap, 0, mainView.forwardY + plusY, Res.paint);
+		}
+
 		public void draw(int plusX) {
 			mainView.sCanvas.drawBitmap(bitmap, X + plusX + mainView.forwardX, Y, Res.paint);
 		}

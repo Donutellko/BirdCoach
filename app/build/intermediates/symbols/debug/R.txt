@@ -460,10 +460,11 @@ int drawable menu_green 0x7f020054
 int drawable menu_purple1 0x7f020055
 int drawable menu_purple2 0x7f020056
 int drawable note 0x7f020057
-int drawable notification_template_icon_bg 0x7f02005b
-int drawable scr3_orange1 0x7f020058
-int drawable scr3_orange2 0x7f020059
-int drawable wire 0x7f02005a
+int drawable notification_template_icon_bg 0x7f02005c
+int drawable rules 0x7f020058
+int drawable scr3_orange1 0x7f020059
+int drawable scr3_orange2 0x7f02005a
+int drawable wire 0x7f02005b
 int id action0 0x7f0d0050
 int id action_bar 0x7f0d0041
 int id action_bar_activity_content 0x7f0d0000
