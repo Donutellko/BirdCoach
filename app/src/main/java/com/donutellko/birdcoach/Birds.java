@@ -1,6 +1,9 @@
 package com.donutellko.birdcoach;
 
-import android.content.Context;
+/**
+ * Объект птичек.
+ */
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 

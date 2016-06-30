@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 import android.widget.TextView;
 
 /**
- * Created by donat on 4/21/16.
+ * Класс содержит методы для отображения диалогов и генерации текста, выводимого на экран.
  */
 public class Dialogs {
 
@@ -18,49 +18,30 @@ public class Dialogs {
 		String s = "";
 
 		if (level > 1 && !(level == 5 && Level.hardBool))  {
-			s = "\n\t\tУ вас уже " + Level.score;
-			s += ((Level.score % 10 < 4 && Level.score != 0 && (Level.score < 5 || Level.score > 20)) ? " очка" : " очков")  + "\n";
-			if ((Level.hardBool) ? (Level.recordHard > 0) : (Level.recordEasy > 0))
+			s = "\n\t\t" + mainView.context.getString(R.string.s_already_got) +  " " + Level.score + " " + wordForm("score", Level.score) + "\n";
+			if ((Level.hardBool) ? (Level.recordHard[0] > 0) : (Level.recordEasy[0] > 0))
 				s+= ((Level.hardBool) ?
-						  ((Level.recordHard < Level.score) ? " Предыдущий рекорд на большой сложности - " + Level.recordHard : "") :
-						  (Level.recordHard < Level.score) ? " Предыдущий рекорд на низкой сложности - " + Level.recordEasy : "" );
+						  ((Level.recordHard[0] < Level.score) ? mainView.context.getString(R.string.s_prev_hard) + " " +  Level.recordHard[0] : "") :
+						  (Level.recordHard[0] < Level.score) ? mainView.context.getString(R.string.s_prev_easy) + " " +  Level.recordEasy[0] : "" );
 		}
-
-
 
 		TextView tv = new TextView(mainView.context);
 
-		tv.setText("\t\tУровень " + level + "\n" + s);
+		tv.setText("\t\t" + mainView.context.getString(R.string.s_level) + " " + level + "\n" + s);
 		tv.setTypeface(type);
-		tv.setTextSize(mainView.Height / 35);
+		tv.setTextSize(mainView.Height / 40); // / 35);
 
 
 		levelDialog.setView(tv)
 				  .setTitle(title)
 				  .setCancelable(false)
 				  .setIcon(R.mipmap.ic_launcher)
-				  .setNegativeButton("Начать",
+				  .setNegativeButton(mainView.context.getString(R.string.s_start),
 							 new DialogInterface.OnClickListener() {
 								 public void onClick(DialogInterface dialog, int id) {
-									 // Level.playMelody(Level.melodyOrder);
 									 dialog.cancel();
 								 }
 							 });
-
-		/*
-		levelDialog.setTitle(title)
-				  .setMessage("Уровень " + level + "\n" + s)
-				  .setIcon(R.mipmap.ic_launcher)
-				  .setCancelable(false)
-				  .setNegativeButton("Начать",
-							 new DialogInterface.OnClickListener() {
-								 public void onClick(DialogInterface dialog, int id) {
-									 // Level.playMelody(Level.melodyOrder);
-									 dialog.cancel();
-								 }
-							 });
-
-		*/
 
 		AlertDialog alert = levelDialog.create();
 		alert.show();
@@ -71,4 +52,20 @@ public class Dialogs {
 		mainView.sCanvas.drawText(Level.comment, textX + mainView.Width * 7 / 16, mainView.Height * 0.55f, Res.textComment);
 		mainView.sCanvas.drawText(Level.scoresText(), textX + 30, mainView.Height - mainView.Height / 18, Res.textInfo);
 	}
+
+	static String wordForm(String s, int n) {
+		int m100 = n % 100;
+		int m10 = n % 10;
+		switch (s) {
+			case "score":
+				if (m10 == 0 || m10 % 10 >= 5 || m100 >= 5 && m100 <= 20)
+					return mainView.context.getString(R.string.s_scores_mult);
+				else if (m10 >= 1 )
+					return mainView.context.getString(R.string.s_scores_some);
+				else
+					return mainView.context.getString(R.string.s_scores_one);
+		}
+		return "";
+	}
+
 }

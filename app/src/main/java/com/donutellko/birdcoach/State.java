@@ -1,5 +1,9 @@
 package com.donutellko.birdcoach;
 
+/**
+ * Класс управляет состоянием игры, анимацией в меню.
+ */
+
 import android.graphics.Bitmap;
 
 public class State {
@@ -12,7 +16,7 @@ public class State {
 	}
 
 	public static boolean isMoving() {
-		return !(state == States.MAIN || state == States.MENU || state == States.GAME || state == States.LEVEL || state == States.SETTINGS || state == States.RULES);
+		return !(state == States.MAIN || state == States.MENU || state == States.GAME || state == States.LEVEL || state == States.SETTINGS || state == States.RULES || state == States.RECORDS);
 	}
 
 	public static States MovingTo() {
@@ -20,7 +24,7 @@ public class State {
 		States result = null;
 
 		switch (state) {
-			case MAIN_MENU: case RULES_MENU: case SETTINGS_MENU: case LEVEL_MENU: case GAME_MENU:
+			case MAIN_MENU: case RULES_MENU: case SETTINGS_MENU: case LEVEL_MENU: case GAME_MENU: case RECORDS_MENU:
 				result = States.MENU; break;
 			case MENU_GAME: case LEVEL_GAME:
 				result = States.GAME; break;
@@ -32,6 +36,8 @@ public class State {
 				result = States.SETTINGS; break;
 			case MENU_RULES:
 				result = States.RULES; break;
+			case MENU_RECORDS:
+				result = States.RECORDS; break;
 		}
 
 		return result;
@@ -50,6 +56,9 @@ public class State {
 
 				case MENU_GAME:
 				case MENU_MAIN:
+				case MENU_RECORDS:
+				case MENU_RULES:
+				case MENU_SETTINGS:
 					result = States.MENU;
 					break;
 
@@ -69,6 +78,10 @@ public class State {
 
 				case RULES_MENU:
 					result = States.RULES;
+					break;
+
+				case RECORDS_MENU:
+					result = States.RECORDS;
 					break;
 			}
 		}
@@ -100,14 +113,14 @@ public class State {
 			else if (drawCounter[1] < -75) drawCounter[1] = 52;
 			if (drawCounter[2] > 0) drawB(Res.animMain[2], x + Width / 2, 0);
 			else if (drawCounter[2] < -32) drawCounter[2] = 29;
-			if (drawCounter[3] > 0) drawB(Res.animMain[3], x + Width * 3 / 4 + 5, Height / 2);
-			else if (drawCounter[3] < -59) drawCounter[3] = 148;
+			//if (drawCounter[3] > 0) drawB(Res.animMain[3], x + Width * 3 / 4 + 5, Height / 2);
+			//else if (drawCounter[3] < -59) drawCounter[3] = 148;
 
-			mainView.sCanvas.drawText((Res.loadedMain) ? "Нажмите, чтобы продолжить..." : "Подождите...", x + 30, Height - Height / 22, Res.textInfo);
+			mainView.sCanvas.drawText((Res.loadedMain) ? mainView.context.getString(R.string.s_tap) : mainView.context.getString(R.string.s_wait), x + 30, Height - Height / 22, Res.textInfo);
 		}
 
-		if (CheckToFrom(States.MENU) || CheckToFrom(States.LEVEL) || CheckToFrom(States.SETTINGS) || CheckToFrom(States.RULES)) {
-			float x = (CheckFrom(States.MENU) || CheckFrom(States.LEVEL) || CheckToFrom(States.SETTINGS) || CheckToFrom(States.RULES)) ? forwardX : forwardX + Width;
+		if (CheckToFrom(States.MENU) || CheckToFrom(States.LEVEL) || CheckToFrom(States.SETTINGS) || CheckToFrom(States.RULES) || CheckToFrom(States.RECORDS)) {
+			float x = (CheckFrom(States.MENU) || CheckFrom(States.LEVEL) || CheckToFrom(States.SETTINGS) || CheckToFrom(States.RULES) || CheckToFrom(States.RECORDS)) ? forwardX : forwardX + Width;
 
 			if (drawCounter[4] < -30) drawCounter[4] = 30;
 			drawB((drawCounter[4] > 0) ? Res.animVictory[0] : Res.animVictory[1], x + Width / 4, 5);
@@ -126,15 +139,12 @@ public class State {
 		mainView.sCanvas.drawBitmap(res, x, mainView.forwardY + y, Res.paint);
 	}
 
-	public static States getState() {
-		return state;
-	}
 }
 
 enum States {
 	MAIN, MAIN_MENU,
 	MENU, MENU_GAME, MENU_MAIN,
-	RULES, SETTINGS, MENU_RULES, MENU_SETTINGS, RULES_MENU, SETTINGS_MENU,
+	RULES, SETTINGS, RECORDS, MENU_RULES, MENU_SETTINGS, RULES_MENU, SETTINGS_MENU, RECORDS_MENU, MENU_RECORDS,
 
 	GAME, GAME_LEVEL, GAME_MENU,
 	LEVEL, LEVEL_GAME, LEVEL_MENU

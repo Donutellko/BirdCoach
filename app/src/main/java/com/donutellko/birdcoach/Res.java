@@ -12,8 +12,9 @@ import android.media.SoundPool;
 import static android.graphics.Bitmap.createBitmap;
 
 /**
- * Created by donat on 4/25/16.
+ * Класс загружает ресурсы
  */
+
 public class Res extends Thread {
 
 	static int H, W;
@@ -57,6 +58,9 @@ public class Res extends Thread {
 
 		player = MediaPlayer.create(context, R.raw.hopper);
 		player.setLooping(true);
+
+
+
 		if (Level.musicBool) player.start();
 
 		animMain[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.main_blue);
@@ -155,17 +159,17 @@ public class Res extends Thread {
 		Typeface type = Typeface.createFromAsset(mainView.context.getAssets(), "comic.ttf");
 
 		textComment.setColor(0xFFFFFFFF);
-		textComment.setTextSize(mainView.Height / 22);
+		textComment.setTextSize(mainView.Height / 23); // / 22);
 		textComment.setTextAlign(Paint.Align.CENTER);
 		textComment.setTypeface(type);
 
 		textInfo.setColor(0xFFFFFFFF);
-		textInfo.setTextSize(mainView.Height / 22);
+		textInfo.setTextSize(mainView.Height / 23); // / 22);
 		textInfo.setTextAlign(Paint.Align.LEFT);
 		textInfo.setTypeface(type);
 
 		// textTime.setColor(0xffff0000); - теперь в level.timeText();
-		textTime.setTextSize(mainView.Height / 24);
+		textTime.setTextSize(mainView.Height / 26); //  / 24);
 		textTime.setTextAlign(Paint.Align.LEFT);
 		textTime.setTypeface(type);
 

@@ -1,3 +1,46 @@
 <resources>
     <string name="app_name">BirdCoach</string>
+    <string name="s_cancel">Continue</string>
+    <string name="s_menu">Menu</string>
+    <string name="s_mus_off">Turn music off</string>
+    <string name="s_mus_on">Turn music on</string>
+    <string name="s_exit">Exit</string>
+    <string name="s_settings">Settings</string>
+    <string name="s_details">BirdCoach v1.6 by Donutellko (donutellko@gmail.com; github.com/Donutellko).</string>
+    <string name="s_reset_table">Reset records table</string>
+    <string name="s_diff_newbie">Current difficulty: Newbie</string>
+    <string name="s_diff_master">Current difficulty: Master</string>
+    <string name="s_back">Back</string>
+    <string name="s_rec_table">Records tavle: </string>
+    <string name="s_scores">Score: </string>
+    <string name="s_time">Time: </string>
+    <string name="s_start">Start</string>
+    <string name="s_already_got">You\'ve got </string>
+
+    <string name="s_prev_easy"> Previous record on Newbie - </string>
+    <string name="s_prev_hard"> Previous record on Master - </string>
+
+    <string name="s_scores_mult">scores</string>
+    <string name="s_scores_some">scores</string>
+    <string name="s_scores_one">scores</string>
+
+
+    <string name="s_wait">Please, wait...</string>
+    <string name="s_tap">Tap to continue...</string>
+
+    <string name="s_new_hard">New Maestro game: sextet</string>
+    <string name="s_new_easy">New game: trio</string>
+    <string name="s_birds_mult">birds</string>
+    <string name="s_new_record">New record! </string>
+    <string name="s_record"> Record is - </string>
+
+    <string name="s_trio">Trio</string>
+    <string name="s_quartet">Quartet</string>
+    <string name="s_quintet">Quintet</string>
+    <string name="s_sextet">Sextet</string>
+    <string name="s_septet">Septet</string>
+    <string name="s_octet">Octet</string>
+    <string name="s_nonet">Nonet</string>
+
+    <string name="s_level">Level </string>
 </resources>

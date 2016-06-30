@@ -1,11 +1,11 @@
 package com.donutellko.birdcoach;
 
 import android.util.Log;
+
 import java.util.Random;
 
 /**
- * level:   1   2   3   4   5   6   7   8   9   10  11  12
- * N:       4   4:1 5   5:1 6   6:2 7   7:2 8   8:3 9   9:3
+ * Класс управляет генерацией уровней, проверяет правильность мелодии, ведёт счёт времени и очков.
  */
 
 
@@ -26,20 +26,22 @@ public class Level extends Thread {
 	static double[] bushPlaceX = {0.134, 0.176, 0.196, 0.215, 0.281, 0.287, 0.329, 0.380, 0.396, 0.435, 0.472, 0.540};
 	static double[] bushPlaceY = {0.767, 0.560, 0.691, 0.814, 0.612, 0.730, 0.855, 0.740, 0.582, 0.814, 0.657, 0.764};
 
-	 static int[]
-				easyCount = {3, 3, 	4, 4,		5, 5, 5, 	6, 6, 6, 	7, 7, 7, 7, 	8, 8, 8, 8,		9, 9, 9, 9},
-				easySame =  {2, 0, 	2, 0, 	3, 2, 0, 	3, 2, 0, 	4, 3, 2, 0,		4, 3, 2, 0,		4, 3, 2, 0};
+	static int[]
+			  easyCount = {3, 3, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9},
+			  easySame = {2, 0, 2, 0, 3, 2, 0, 3, 2, 0, 4, 3, 2, 0, 4, 3, 2, 0, 4, 3, 2, 0};
 
 
 	static String comment;
 	static String[]
-			  positiveComment = {"Чудненько!", "Восхитительно!", "Да вы растёте на глазах!", "Вам дорога в консерваторию!","Вы воспитываете супер-певцов", "Гергиев отдыхает",
+			  positiveComment = {"Чудненько!", "Восхитительно!", "Да вы растёте на глазах!", "Вам дорога в консерваторию!", "Вы воспитываете супер-певцов", "Гергиев отдыхает",
 			  "Паганини курит в сторонке", "Браво, маэстро!", "Вы идеальны!", "Да у вас абсолютный слух!"},
 			  negativeComment = {"Медвед топтался на ваших ушах?", "Вы играете на наших нервах!", "Не мучайте нас, почистите уши!", "Птичку... Жалко...",
-						 "Вы как Бетховен! Тоже глухой..", "Выньте уже бананы из ушей!",  "Чижик-Пыжик, где ты был?"},
-			  counts = {"Трио", "Квартет", "Квинтет", "Секстет", "Септет", "Октет", "Нонет"};
+						 "Вы как Бетховен! Тоже глухой..", "Выньте уже бананы из ушей!", "Чижик-Пыжик, где ты был?"},
+			  counts = {mainView.context.getString(R.string.s_trio), mainView.context.getString(R.string.s_quartet), mainView.context.getString(R.string.s_quintet),
+						 mainView.context.getString(R.string.s_sextet), mainView.context.getString(R.string.s_septet), mainView.context.getString(R.string.s_octet),
+						 mainView.context.getString(R.string.s_nonet)};
 
-	public static int recordHard, recordEasy;
+	public static int recordHard[] = new int[5], recordEasy[] = new int[5];
 	static boolean newRecord;
 
 
@@ -56,11 +58,11 @@ public class Level extends Thread {
 		newRecord = false;
 		score = 0;
 		lifes = 3;
-		level = (hardBool) ? 5 : 0;
+		level = (hardBool) ? 8 : 0;
 		if (hardBool)
-			Dialogs.nextLevel("Новая сложная игра, секстет птичек", level - 4);
+			Dialogs.nextLevel(mainView.context.getString(R.string.s_new_hard), level - 7);
 		else
-			Dialogs.nextLevel("Новая игра, трио птичек", level + 1);
+			Dialogs.nextLevel(mainView.context.getString(R.string.s_new_easy), level + 1);
 		nextLevel();
 	}
 
@@ -98,9 +100,9 @@ public class Level extends Thread {
 		howMushTimesYouCanListenTheMelody = melodyOrder.length * ((hardBool) ? 1 : 2);
 
 		if (level > 1 && !hardBool)
-			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " птичек", level);
+			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " " + mainView.context.getString(R.string.s_birds_mult), level);
 		else if (hardBool && !(level == 6))
-			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " птичек", level - 5);
+			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " " + mainView.context.getString(R.string.s_birds_mult), level - 5);
 	}
 
 	public static void createBirds(int[] order) {
@@ -147,7 +149,7 @@ public class Level extends Thread {
 			order[i] = r;
 		}
 
-		for (int i = 0; i < order.length; i++) {	// Перемешивание
+		for (int i = 0; i < order.length; i++) {   // Перемешивание
 			int r = Level.random.nextInt(order.length);
 			int tmp = order[i];
 			order[i] = order[r];
@@ -163,7 +165,7 @@ public class Level extends Thread {
 		// КОСТЫЛЬ
 		for (int i = 0; i < order.length; i++)
 			if (order[i] < 0 || order[i] > 9)
-				return(generateMelody(level));
+				return (generateMelody(level));
 
 		return order;
 	}
@@ -190,7 +192,7 @@ public class Level extends Thread {
 				} else break;
 				i++;
 			}
-			if (c == i && i == melodyOrder.length) {	// Мелодия правильная
+			if (c == i && i == melodyOrder.length) {   // Мелодия правильная
 				score += level * 100;
 				score += (time < melodyOrder.length * 5 && level != 0) ? melodyOrder.length * (melodyOrder.length * 5 - time) : 0;
 
@@ -206,14 +208,16 @@ public class Level extends Thread {
 				if (lifes == 0) {
 					com.donutellko.birdcoach.State.state = com.donutellko.birdcoach.States.GAME_LEVEL;
 					com.donutellko.birdcoach.State.victoryBool = false;
-					if (hardBool && recordHard < score) { recordHard = score; newRecord = true; }
-					else if (!hardBool && recordEasy < score) { recordEasy = score; newRecord = true; }
+					recordAdd(hardBool, score);
 				}
-				Log.i("Game", "Checked " + i + " sounds, melody is wrong.");
-				//mistakeDialog();
 			}
+			Log.i("Game", "Checked " + i + " sounds, melody is wrong.");
+			//mistakeDialog();
 		}
 	}
+
+
+
 
 	static void playMelody(int[] order) {
 		if (howMushTimesYouCanListenTheMelody != 0) {
@@ -238,23 +242,52 @@ public class Level extends Thread {
 
 	public static String scoresText() {
 		String s = "";
-		if (score > ((hardBool) ? recordEasy : recordHard)) s += "Новый рекорд! ";
-		s += score + ((score % 10 < 4 && score != 0 && (score < 5 || score > 20)) ? " очка!" : " очков!");
-		if (score < ((hardBool) ? recordEasy : recordHard)) {
-			if (hardBool && recordHard != 0) s += " Рекорд - " + recordHard + ".";
-			if (!hardBool && recordEasy != 0) s += " Рекорд - " + recordEasy + ".";
+		if (score > ((hardBool) ? recordEasy[0] : recordHard[0])) s += mainView.context.getString(R.string.s_new_record) + score + " " + Dialogs.wordForm("score", score) + "!";
+		if (score < ((hardBool) ? recordEasy[0] : recordHard[0])) {
+			if (hardBool && recordHard[0] != 0) s += mainView.context.getString(R.string.s_record) + recordHard[0] + ".";
+			if (!hardBool && recordEasy[0] != 0) s += mainView.context.getString(R.string.s_record) + recordEasy[0] + ".";
 		}
 
 		return s;
 	}
 
 	public static String timeText() {
-		Res.textTime.setColor((time > 0) ? 0xFFFF5511 :  0xFFFFDD00);
+		Res.textTime.setColor((time > 0) ? 0xFFFF5511 : 0xFFFFDD00);
 		int t = Math.abs(time);
 		String s = (time > 0) ? "" : "-";
 		s += t / 60 + ":";
 		s += ((t % 60 < 10) ? "0" : "") + t % 60;
 		// Log.i("sgjsfkfjjhtrvhbyjjhdfvh", "Time: " + Level.time + "\t " + s);
 		return s;
+	}
+
+	public static void recordAdd(boolean hardBool, int newScore) {
+		int[] tmp = (hardBool) ? recordHard : recordEasy;
+		if (newScore < tmp[4]) return;
+		else if (newScore < tmp[3]) {
+			tmp[4] = newScore;
+		} else if (newScore < tmp[2]) {
+			tmp[4] = tmp[3];
+			tmp[3] = newScore;
+		} else if (newScore < tmp[1]) {
+			tmp[4] = tmp[3];
+			tmp[3] = tmp[2];
+			tmp[2] = newScore;
+		} else if (newScore < tmp[0]) {
+			tmp[4] = tmp[3];
+			tmp[3] = tmp[2];
+			tmp[2] = tmp[1];
+			tmp[1] = newScore;
+		} else {
+			tmp[4] = tmp[3];
+			tmp[3] = tmp[2];
+			tmp[2] = tmp[1];
+			tmp[1] = tmp[0];
+			tmp[0] = newScore;
+		}
+
+		if (hardBool) recordHard = tmp;
+		else recordEasy = tmp;
+		return;
 	}
 }

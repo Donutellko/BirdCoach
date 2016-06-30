@@ -1,5 +1,9 @@
 package com.donutellko.birdcoach;
 
+/**
+ * Класс содержит методы, осуществляющие отрисовку, загрузку ресурсов, управляет игрой (таймер).
+ */
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -40,12 +44,16 @@ public class mainView extends View {
 			  BIRDS_BITMAP_COLUMNS = 9, BIRDS_BITMAP_STRINGS = 5,
 			  BIRDS_HEIGHT, BIRDS_WIDTH;
 
+	static int timer = 0;
+
+	static CountDownTimer m_Timer;
+
 	public mainView(Context context) {
 		super(context);
 
 		mainView.context = context;
-
-		new Timer(100000000000000L, 10).start();
+		if (m_Timer == null)
+			m_Timer = new Timer(100000000000000L, 10).start();
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -71,15 +79,17 @@ public class mainView extends View {
 		screenGame = new forwElement(Res.forwardGame, 0, 0);
 		screenVictory = new forwElement(Res.forwardVictory, 0, 0);
 		screenLose = new forwElement(Res.forwardLose, 0, 0);
-		screenRules = new forwElement(Res.forwardRules, 0, (int) (- Height * 0.66));
+		screenRules = new forwElement(Res.forwardRules, 0, (int) (-Height * 0.66));
 
 
 		gameMp = new forwElement(Res.megaphone, Width - 3 * BIRDS_WIDTH, Height - BIRDS_HEIGHT * 3, BIRDS_HEIGHT * 3 * 650 / 750, BIRDS_HEIGHT * 3);
 		gameNote = new forwElement(Res.note, Width / 2 - BIRDS_WIDTH / 4, Height / 20, BIRDS_HEIGHT * 2 / 3, BIRDS_HEIGHT * 2 / 3);
 		gameBush = new forwElement(Res.forwardGame, Width - 4 * BIRDS_WIDTH, Height * 8 / 11, w, h);
 
-		Xacc = -Width / 1000;
-		Yacc = Height / 600;
+		Xacc = -Width / 1000f;
+		Yacc = Height / 600f;
+
+		Log.i("Xacc+Width", "Xacc = " + Xacc + " " + Width / 1000f + "; Width = " + Width);
 
 		LevelThread = new Level("LevelThread");
 		LevelThread.start();
@@ -95,35 +105,59 @@ public class mainView extends View {
 		wire.draw();
 
 		if (State.MovingFrom() != null)
-		switch (State.MovingFrom()) {
-			case MAIN: screenMain.draw(); break;
-			case MENU:
-			case RULES: screenMenu.draw(); screenRules.draw(0, (int)(-Height * 0.66)); break;
-			case SETTINGS: screenMenu.draw(); break;
-			case GAME: screenGame.draw(); break;
-			case LEVEL:
-				if (State.victoryBool) screenVictory.draw();
-				else screenLose.draw();
-				 break;
-		}
+			switch (State.MovingFrom()) {
+				case MAIN:
+					screenMain.draw();
+					break;
+				case MENU:
+					screenMenu.draw();
+					break;
+				case RULES:
+					screenMenu.draw();
+					screenRules.draw(0, (int) (-Height * 0.66));
+					break;
+				case SETTINGS:
+				case RECORDS:
+					screenMenu.draw();
+					break;
+				case GAME:
+					screenGame.draw();
+					break;
+				case LEVEL:
+					if (State.victoryBool) screenVictory.draw();
+					else screenLose.draw();
+					break;
+			}
 
 		if (State.MovingTo() != null)
-		switch (State.MovingTo()) {
-			case MAIN: screenMain.draw(+ Width); break;
-			case MENU: screenMenu.draw(Width); break;
-			case RULES: screenMenu.draw(); screenRules.draw(0, (int)(-Height * 0.66)); break;
-			case SETTINGS: screenMenu.draw(); break;
-			case GAME: screenGame.draw(+ Width); break;
-			case LEVEL:
-				if (State.victoryBool) screenVictory.draw(+ Width);
-				else screenLose.draw(+ Width);
-				break;
-		}
+			switch (State.MovingTo()) {
+				case MAIN:
+					screenMain.draw(+Width);
+					break;
+				case MENU:
+					screenMenu.draw(Width);
+					break;
+				case RULES:
+					screenMenu.draw();
+					screenRules.draw(0, (int) (-Height * 0.66));
+					break;
+				case SETTINGS:
+				case RECORDS:
+					screenMenu.draw();
+					break;
+				case GAME:
+					screenGame.draw(+Width);
+					break;
+				case LEVEL:
+					if (State.victoryBool) screenVictory.draw(+Width);
+					else screenLose.draw(+Width);
+					break;
+			}
 
 		State.animate(drawCounter);
 
-		if (State.CheckToFrom(States.GAME));
-			for (Birds b : birds) b.drawBird(canvas);
+		if (State.CheckToFrom(States.GAME)) ;
+		for (Birds b : birds) b.drawBird(canvas);
 
 		if (State.CheckToFrom(States.LEVEL))
 			Dialogs.writeComment();
@@ -132,16 +166,26 @@ public class mainView extends View {
 			float plusY = (float) (forwardY - Height * 0.6);
 			int x = Width / 2;
 			int mult = Height / 11;
-			canvas.drawText("BirdCoach v1.5 by Donutellko (donutellko@gmail.com; github.com/Donutellko).", 20, plusY + 20, Res.textSettings);
-			canvas.drawText((Level.musicBool ? "Вы" : "В") + "ключить музыку", 				 	 x, plusY + mult * 3, Res.textSettings);
-			canvas.drawText("Обнулить таблицу рекордов",												  	 x, plusY + mult * 4, Res.textSettings);
-			canvas.drawText("Текущая сложность: " + (Level.hardBool ? "Маэстро" : "Новичок"), x, plusY + mult * 5, Res.textSettings);
-			canvas.drawText("Назад", 																			 x, plusY + mult * 6, Res.textSettings);
+			canvas.drawText(context.getString(R.string.s_details), 20, plusY + 20, Res.textSettings);
+			canvas.drawText((Level.musicBool ? context.getString(R.string.s_mus_off) : context.getString(R.string.s_mus_on)), x, plusY + mult * 3, Res.textSettings);
+			canvas.drawText(context.getString(R.string.s_reset_table), x, plusY + mult * 4, Res.textSettings);
+			canvas.drawText((Level.hardBool ? context.getString(R.string.s_diff_master) : context.getString(R.string.s_diff_newbie)), x, plusY + mult * 5, Res.textSettings);
+			canvas.drawText(context.getString(R.string.s_back), x, plusY + mult * 6, Res.textSettings);
+		} else if (State.CheckToFrom(States.RECORDS)) {
+			float plusY = (float) (forwardY - Height * 0.6);
+			int x = Width / 2;
+			int mult = Height / 11;
+			canvas.drawText(context.getString(R.string.s_rec_table), Width * 35 / 100, plusY + mult, Res.textSettings);
+
+			for (int i = 0; i < 5; i++) {
+				canvas.drawText(i + ".            " + Level.recordEasy[i], Width * 2 / 10, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText(i + ".            " + Level.recordHard[i], Width * 6 / 10, plusY + mult * (3 + i), Res.textSettings);
+			}
 		}
 
 		if (State.state == States.GAME) {
-			canvas.drawText("Score: " + Level.score, Height / 30, Height / 30, Res.textScores);
-			canvas.drawText("Time: " + Level.timeText(), Width * 7 / 8, Height / 30, Res.textTime);
+			canvas.drawText(context.getString(R.string.s_scores) + Level.score, Height / 30, Height / 30, Res.textScores);
+			canvas.drawText(context.getString(R.string.s_time) + Level.timeText(), Width * 7 / 8, Height / 30, Res.textTime);
 
 			for (int i = 0; i < Level.lifes; i++)
 				canvas.drawBitmap(Res.lifesBitmap, 30 + BIRDS_HEIGHT * i * 2 / 3, Height / 20, Res.paint);
@@ -161,6 +205,8 @@ public class mainView extends View {
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX(), y = event.getY();
 
+		Log.i("Touch", "onTouchEvent" + " " + State.state + " " + Width + " " + forwardX + " " + Xspeed + " " + Xacc);
+
 		if (State.state == States.MAIN && event.getAction() == MotionEvent.ACTION_DOWN)
 			State.state = States.MAIN_MENU;
 
@@ -172,12 +218,10 @@ public class mainView extends View {
 				State.state = States.MENU_RULES;
 			else if (x > Width * 6 / 11 && x < Width * 7 / 11 && y > Height * 20 / 65 && y < Height * 35 / 65)
 				State.state = States.MENU_SETTINGS;
+			else if (x > Width * 17 / 160 && x < Width * 31 / 160 && y > Height * 21 / 80 && y < Height * 19 / 40)
+				State.state = States.MENU_RECORDS;
 		}
 
-		if (State.state == States.RULES && event.getAction() == MotionEvent.ACTION_DOWN)
-			State.state = States.RULES_MENU;
-//		else if (State.state == States.SETTINGS && event.getAction() == MotionEvent.ACTION_DOWN)
-//			State.state = States.SETTINGS_MENU;
 
 		if (State.state == States.GAME) {
 			switch (event.getAction()) {
@@ -219,18 +263,23 @@ public class mainView extends View {
 			}
 		}
 
+		if (State.state == States.RULES && event.getAction() == MotionEvent.ACTION_UP)
+			State.state = States.RULES_MENU;
+		else if (State.state == States.RECORDS && event.getAction() == MotionEvent.ACTION_UP)
+			State.state = States.RECORDS_MENU;
 		if (State.state == States.SETTINGS && event.getAction() == MotionEvent.ACTION_UP) {
 			if (y > Height / 11 * 3 && y < Height / 11 * 4) {
 				Level.musicBool = !Level.musicBool;
 			} else if (y > Height / 11 * 4 && y < Height / 11 * 5) {
-				Level.recordEasy = 0;
-				Level.recordHard = 0;
+				Level.recordEasy = new int[5];
+				Level.recordHard = new int[5];
 			} else if (y > Height / 11 * 5 && y < Height / 11 * 6) {
 				Level.hardBool = !Level.hardBool;
 			} else if (y > Height / 11 * 6 && y < Height / 11 * 7) {
 				State.state = States.SETTINGS_MENU;
 			}
 		}
+
 
 		if (State.state == States.LEVEL) {
 			if (State.victoryBool) Level.nextLevel();
@@ -242,9 +291,7 @@ public class mainView extends View {
 		return true;
 	}
 
-	class Timer extends CountDownTimer {
-
-		int c = 0;
+	public class Timer extends CountDownTimer {
 
 		public Timer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
@@ -252,10 +299,9 @@ public class mainView extends View {
 
 		@Override
 		public void onTick(long millisUntilFinished) {
-			c++;
-			if (State.state == States.GAME && Level.timeBool && c % 50 == 0) {
+			mainView.timer++;
+			if (State.state == States.GAME && Level.timeBool && mainView.timer % 50 == 0) {
 				Level.time--;
-				// Log.i("sgjsfkfjjhtrvhbyjjhdfvh", "Time: " + Level.time);
 			}
 
 			if (Res.player != null) {
@@ -272,18 +318,10 @@ public class mainView extends View {
 				drawCounter[i] += (drawCounter[i] < 200) ? -1 : 100;
 
 			if (State.isMoving()) {
-				boolean MR = false, MS = false, RM = false, SM = false;
-				switch (State.state) {
-					case MENU_RULES: MR = true; break;
-					case MENU_SETTINGS: MS = true; break;
-					case RULES_MENU: RM = true; break;
-					case SETTINGS_MENU: SM = true; break;
-				}
-
-				if (MR || MS || RM || SM) {
-					if (MR || MS) {
+				if (State.CheckToFrom(States.MENU) && (State.CheckToFrom(States.RULES) || State.CheckToFrom(States.SETTINGS) || State.CheckToFrom(States.RECORDS))) {
+					if (State.CheckTo(States.RULES) || State.CheckTo(States.SETTINGS) || State.CheckToFrom(States.RECORDS)) {
 						if (forwardY >= Height * 0.66) {
-							State.state = (MR) ? States.RULES : States.SETTINGS;
+							State.state = State.MovingTo();
 							Yspeed = 0;
 						}
 						if (forwardY < Height / 3) Yspeed += Yacc;
@@ -301,7 +339,7 @@ public class mainView extends View {
 					sky.moveY();
 					hills.moveY();
 					weed.moveY();
-					wire.moveY(); 
+					wire.moveY();
 					screenMenu.moveY();
 					screenRules.moveY();
 				} else {
@@ -320,8 +358,6 @@ public class mainView extends View {
 					}
 				}
 			}
-
-			// Log.i("", "Xspeed = " + Xspeed);
 		}
 
 		@Override

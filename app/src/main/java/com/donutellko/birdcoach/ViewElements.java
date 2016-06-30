@@ -3,7 +3,7 @@ package com.donutellko.birdcoach;
 import android.graphics.Bitmap;
 
 /**
- * Created by donat on 4/27/16.
+ * Класс для создания объектов, нужных для отображения фона.
  */
 public class ViewElements {
 

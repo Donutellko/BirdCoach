@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">BirdCoach</string>
+    <string name="s_cancel">Продолжить</string>
+    <string name="s_menu">Меню</string>
+    <string name="s_mus_off">Выключить музыку</string>
+    <string name="s_mus_on">Включить музыку</string>
+    <string name="s_exit">Выйти</string>
+    <string name="s_settings">Настройки</string>
+    <string name="s_details">BirdCoach v1.6 by Donutellko (donutellko@gmail.com; github.com/Donutellko).</string>
+    <string name="s_reset_table">Обнулить таблицу рекордов</string>
+    <string name="s_diff_newbie">Текущая сложность: Новичок</string>
+    <string name="s_diff_master">Текущая сложность: Маэстро</string>
+    <string name="s_back">Назад</string>
+    <string name="s_rec_table">Таблица рекордов: </string>
+    <string name="s_scores">Очки: </string>
+    <string name="s_time">Время: </string>
+    <string name="s_start">Начать</string>
+    <string name="s_already_got">У вас уже </string>
+
+    <string name="s_prev_easy"> Предыдущий рекорд на низкой сложности - </string>
+    <string name="s_prev_hard"> Предыдущий рекорд на высокой сложности - </string>
+
+    <string name="s_scores_mult">очков</string>
+    <string name="s_scores_some">очка</string>
+    <string name="s_scores_one">очко</string>
+
+
+    <string name="s_wait">Пожалуйста, подождите...</string>
+    <string name="s_tap">Нажмите, чтобы продолжить...</string>
+
+    <string name="s_new_hard">Новая сложная игра: сексет птичек</string>
+    <string name="s_new_easy">Новая игра: трио птичек</string>
+    <string name="s_birds_mult">птичек</string>
+    <string name="s_new_record">Новый рекорд! </string>
+    <string name="s_record"> Рекорд - </string>
+
+
+    <string name="s_trio">Трио</string>
+    <string name="s_quartet">Квартет</string>
+    <string name="s_quintet">Квинтет</string>
+    <string name="s_sextet">Секстет</string>
+    <string name="s_septet">Септет</string>
+    <string name="s_octet">Октет</string>
+    <string name="s_nonet">Нонет</string>
+
+    <string name="s_level">Уровень </string>
+
+</resources>
