@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
 		Level.recordHard = loadScore(true);
 		Level.recordEasy = loadScore(false);
+		Level.nameRecordHard = LoadNames(true);
+		Level.nameRecordEasy = LoadNames(false);
 		Log.e("", "onCreate()_4");
 	}
 
@@ -44,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
 		loadProgress();
 		Log.e("", "onResume()2");
 		super.onResume();
-		Log.e("", "onCreate()3");
+		Log.e("", "onResume()3");
 	}
-
 
 	@Override
 	protected void onPause() {
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 		alert.show();
 	}
 
+
 	static int[] loadScore(boolean hard) {
 		Log.i("", "Loading progress...");
 		int[] tmp = new int[5];
@@ -124,6 +126,18 @@ public class MainActivity extends AppCompatActivity {
 		return tmp;
 	}
 
+	static String[] LoadNames (boolean hard) {
+		Log.i("", "Loading names...");
+		String[] tmp = new String[5];
+		sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
+		tmp[0] = sPref.getString((hard) ? "HardName0" : "EasyName0", "-");
+		tmp[1] = sPref.getString((hard) ? "HardName1" : "EasyName1", "-");
+		tmp[2] = sPref.getString((hard) ? "HardName2" : "EasyName2", "-");
+		tmp[3] = sPref.getString((hard) ? "HardName3" : "EasyName3", "-");
+		tmp[4] = sPref.getString((hard) ? "HardName4" : "EasyName4", "-");
+		return tmp;
+	}
+
 	static void saveScore(int[] score, boolean hard) {
 		Log.i("", "Saving scores to memory...");
 		sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
@@ -133,6 +147,18 @@ public class MainActivity extends AppCompatActivity {
 		ed.putInt((hard) ? "Hard2" : "Easy2", score[2]);
 		ed.putInt((hard) ? "Hard3" : "Easy3", score[3]);
 		ed.putInt((hard) ? "Hard4" : "Easy4", score[4]);
+		ed.apply();
+	}
+
+	static void saveNames(String[] names, boolean hard) {
+		Log.i("", "Saving scores to memory...");
+		sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
+		SharedPreferences.Editor ed = sPref.edit();
+		ed.putString((hard) ? "HardName0" : "EasyName0", names[0]);
+		ed.putString((hard) ? "HardName1" : "EasyName1", names[1]);
+		ed.putString((hard) ? "HardName2" : "EasyName2", names[2]);
+		ed.putString((hard) ? "HardName3" : "EasyName3", names[3]);
+		ed.putString((hard) ? "HardName4" : "EasyName4", names[4]);
 		ed.apply();
 	}
 
@@ -149,6 +175,14 @@ public class MainActivity extends AppCompatActivity {
 			for (int i = 0; i < Level.melodyOrder.length; i++)
 				ed.putInt("melody_" + i, Level.melodyOrder[i]);
 			ed.putInt("time", Level.time);
+
+			int i = 0;
+			for (Birds b: mainView.birds) {
+				ed.putFloat("bird_" + i + "x", b.x);
+				ed.putFloat("bird_" + i + "y", b.y);
+				i++;
+			}
+
 			Log.i("", "Progress saved.");
 		} else {
 			ed.putBoolean("is", false);
@@ -160,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
 	static void loadProgress() {
 		Log.e("", "Loading progress...");
 		if (sPref.getBoolean("is", false)) {
-			Level.newGame();
+			Level.newGame("continue");
+			State.state = States.GAME;
 			sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
 			Level.level = sPref.getInt("level", 0);
 			Level.hardBool = sPref.getBoolean("hardBool", false);
@@ -169,6 +204,15 @@ public class MainActivity extends AppCompatActivity {
 			Level.melodyOrder = new int[l];
 			for (int i = 0; i < l; i++)
 				Level.melodyOrder[i] = sPref.getInt("melody_" + i, 0);
+
+			int i = 0;
+			Level.createBirds(Level.melodyOrder);
+			for (Birds b: mainView.birds) {
+				b.x = sPref.getFloat("bird_" + i + "x", 100);
+				b.y = sPref.getFloat("bird_" + i + "y", 100);
+				Level.checkPlace(b);
+				i++;
+			}
 			Log.i("", "Progress loaded.");
 		} else {
 			Log.i("", "Nothing to load");

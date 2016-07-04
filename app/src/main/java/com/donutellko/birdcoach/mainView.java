@@ -53,7 +53,7 @@ public class mainView extends View {
 
 		mainView.context = context;
 		if (m_Timer == null)
-			m_Timer = new Timer(100000000000000L, 10).start();
+			m_Timer = new Timer(100000000000000L, 1).start();
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -89,7 +89,12 @@ public class mainView extends View {
 		Xacc = -Width / 1000f;
 		Yacc = Height / 600f;
 
-		Log.i("Xacc+Width", "Xacc = " + Xacc + " " + Width / 1000f + "; Width = " + Width);
+		//
+		if (Xacc < -2) Xacc = -1.3f;
+		if (Yacc > 1.8) Yacc = 1.8f;
+		//
+
+		Log.i("Xacc+Width", "Xacc = " + Xacc + "Yacc = \" + Yacc +; Width = " + Width);
 
 		LevelThread = new Level("LevelThread");
 		LevelThread.start();
@@ -177,9 +182,17 @@ public class mainView extends View {
 			int mult = Height / 11;
 			canvas.drawText(context.getString(R.string.s_rec_table), Width * 35 / 100, plusY + mult, Res.textSettings);
 
+			canvas.drawText("Новичок:", Width * 2 / 10, plusY + mult * 2, Res.textSettings);
+			canvas.drawText("Маэстро:", Width * 6 / 10, plusY + mult * 2, Res.textSettings);
 			for (int i = 0; i < 5; i++) {
-				canvas.drawText(i + ".            " + Level.recordEasy[i], Width * 2 / 10, plusY + mult * (3 + i), Res.textSettings);
-				canvas.drawText(i + ".            " + Level.recordHard[i], Width * 6 / 10, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText((i + 1) + ".", Width * 2 / 10, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText((i + 1) + ".", Width * 6 / 10, plusY + mult * (3 + i), Res.textSettings);
+
+				canvas.drawText(Level.nameRecordEasy[i] + "", Width * 25 / 100, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText(Level.nameRecordHard[i] + "", Width * 65 / 100, plusY + mult * (3 + i), Res.textSettings);
+
+				canvas.drawText(Level.recordEasy[i] + "", Width * 35 / 100, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText(Level.recordHard[i] + "", Width * 75 / 100, plusY + mult * (3 + i), Res.textSettings);
 			}
 		}
 
@@ -300,7 +313,7 @@ public class mainView extends View {
 		@Override
 		public void onTick(long millisUntilFinished) {
 			mainView.timer++;
-			if (State.state == States.GAME && Level.timeBool && mainView.timer % 50 == 0) {
+			if (State.state == States.GAME && Level.timeBool && mainView.timer % 60 == 0) {
 				Level.time--;
 			}
 
@@ -315,11 +328,11 @@ public class mainView extends View {
 			sky.moveX();
 
 			for (int i = 0; i < drawCounter.length; i++)
-				drawCounter[i] += (drawCounter[i] < 200) ? -1 : 100;
+				drawCounter[i] += (drawCounter[i] < 2 * 200) ? -1 : 100;
 
 			if (State.isMoving()) {
 				if (State.CheckToFrom(States.MENU) && (State.CheckToFrom(States.RULES) || State.CheckToFrom(States.SETTINGS) || State.CheckToFrom(States.RECORDS))) {
-					if (State.CheckTo(States.RULES) || State.CheckTo(States.SETTINGS) || State.CheckToFrom(States.RECORDS)) {
+					if (State.CheckTo(States.RULES) || State.CheckTo(States.SETTINGS) || State.CheckTo(States.RECORDS)) {
 						if (forwardY >= Height * 0.66) {
 							State.state = State.MovingTo();
 							Yspeed = 0;
@@ -352,6 +365,7 @@ public class mainView extends View {
 						Xspeed = 0;
 						forwardX = 0;
 						State.state = State.MovingTo();
+						if (State.state == States.MENU) Level.level = 0;
 					} else {
 						if (forwardX > -Width / 2) Xspeed += Xacc;
 						else Xspeed = (Xspeed >= -2) ? -2 : Xspeed - Xacc;

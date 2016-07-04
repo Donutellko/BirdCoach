@@ -108,11 +108,11 @@ public class State {
 			float x = (State.MovingFrom() == States.MAIN) ? forwardX : forwardX + Width;
 
 			if (drawCounter[0] > 0) drawB(Res.animMain[0], x, 0);
-			else if (drawCounter[0] < -163) drawCounter[0] = 47;
+			else if (drawCounter[0] < -163 * 2) drawCounter[0] = 47 * 2;
 			if (drawCounter[1] > 0) drawB(Res.animMain[1], x + Width / 4 - 1, 0);
-			else if (drawCounter[1] < -75) drawCounter[1] = 52;
+			else if (drawCounter[1] < -75 * 2) drawCounter[1] = 52 * 2;
 			if (drawCounter[2] > 0) drawB(Res.animMain[2], x + Width / 2, 0);
-			else if (drawCounter[2] < -32) drawCounter[2] = 29;
+			else if (drawCounter[2] < -32 * 2) drawCounter[2] = 29 * 2;
 			//if (drawCounter[3] > 0) drawB(Res.animMain[3], x + Width * 3 / 4 + 5, Height / 2);
 			//else if (drawCounter[3] < -59) drawCounter[3] = 148;
 

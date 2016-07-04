@@ -42,6 +42,7 @@ public class Level extends Thread {
 						 mainView.context.getString(R.string.s_nonet)};
 
 	public static int recordHard[] = new int[5], recordEasy[] = new int[5];
+	public static String nameRecordHard[] = new String[5], nameRecordEasy[] = new String[5];
 	static boolean newRecord;
 
 
@@ -63,6 +64,14 @@ public class Level extends Thread {
 			Dialogs.nextLevel(mainView.context.getString(R.string.s_new_hard), level - 7);
 		else
 			Dialogs.nextLevel(mainView.context.getString(R.string.s_new_easy), level + 1);
+		nextLevel();
+	}
+
+	public static void newGame(String cont) {
+		newRecord = false;
+		score = 0;
+		lifes = 3;
+		level = (hardBool) ? 8 : 0;
 		nextLevel();
 	}
 
@@ -217,8 +226,6 @@ public class Level extends Thread {
 	}
 
 
-
-
 	static void playMelody(int[] order) {
 		if (howMushTimesYouCanListenTheMelody != 0) {
 			howMushTimesYouCanListenTheMelody--;
@@ -263,27 +270,55 @@ public class Level extends Thread {
 
 	public static void recordAdd(boolean hardBool, int newScore) {
 		int[] tmp = (hardBool) ? recordHard : recordEasy;
+		String tmp1[] = (hardBool) ? nameRecordHard : nameRecordEasy;
+		int ch = -1;
 		if (newScore < tmp[4]) return;
 		else if (newScore < tmp[3]) {
 			tmp[4] = newScore;
+			ch = 4;
 		} else if (newScore < tmp[2]) {
 			tmp[4] = tmp[3];
+			tmp1[4] = tmp1[3];
 			tmp[3] = newScore;
+			ch = 3;
 		} else if (newScore < tmp[1]) {
 			tmp[4] = tmp[3];
+			tmp1[4] = tmp1[3];
 			tmp[3] = tmp[2];
+			tmp1[3] = tmp1[2];
 			tmp[2] = newScore;
+			ch = 2;
 		} else if (newScore < tmp[0]) {
 			tmp[4] = tmp[3];
+			tmp1[4] = tmp1[3];
 			tmp[3] = tmp[2];
+			tmp1[3] = tmp1[4];
 			tmp[2] = tmp[1];
+			tmp1[2] = tmp1[1];
 			tmp[1] = newScore;
+			ch = 1;
 		} else {
 			tmp[4] = tmp[3];
+			tmp1[4] = tmp1[3];
 			tmp[3] = tmp[2];
+			tmp1[3] = tmp1[4];
 			tmp[2] = tmp[1];
+			tmp1[2] = tmp1[1];
 			tmp[1] = tmp[0];
+			tmp1[0] = tmp1[1];
 			tmp[0] = newScore;
+			ch = 0;
+		}
+
+		if (ch >= 0) {
+			if (hardBool)  {
+				nameRecordHard = tmp1;
+				nameRecordHard[ch] = Dialogs.getName();
+			} else {
+				nameRecordEasy = tmp1;
+				nameRecordEasy[ch] = Dialogs.getName();
+			}
+
 		}
 
 		if (hardBool) recordHard = tmp;

@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.util.Log;
 
 import static android.graphics.Bitmap.createBitmap;
 
@@ -49,17 +50,16 @@ public class Res extends Thread {
 
 	public static void loadNoSize() {
 		if (context == null) context = mainView.context;
-
+		Log.d("Load","Starting loading primary resourses...");
 		backSky = BitmapFactory.decodeResource(context.getResources(), R.drawable.back_sky);
 		backHills = BitmapFactory.decodeResource(context.getResources(), R.drawable.back_hills);
 		backWeed = BitmapFactory.decodeResource(context.getResources(), R.drawable.back_weed);
 		wire = BitmapFactory.decodeResource(context.getResources(), R.drawable.wire);
 		forwardMain = BitmapFactory.decodeResource(context.getResources(), R.drawable.forward_main);
 
+		Log.d("Load","Loading music...");
 		player = MediaPlayer.create(context, R.raw.hopper);
 		player.setLooping(true);
-
-
 
 		if (Level.musicBool) player.start();
 
@@ -68,6 +68,7 @@ public class Res extends Thread {
 		animMain[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.main_red);
 		animMain[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.main_purple);
 
+		Log.d("Load","Primary resourses loaded.");
 		loadedMain = true;
 
 		if (mainView.Height != 0) changeSizeMain();
@@ -75,6 +76,7 @@ public class Res extends Thread {
 	}
 
 	public static void changeSizeMain() {
+		Log.d("Load","Resizing primary resourses...");
 		H = mainView.Height;
 		W = mainView.Width;
 
@@ -90,9 +92,11 @@ public class Res extends Thread {
 		animMain[3] = resize(animMain[3], W / 4, H / 2);
 
 		resizedMain = true;
+		Log.d("Load","Primary resourses resized.");
 	}
 
 	public static void loadAnother() {
+		Log.d("Load","Starting loading and resizing secondary resourses...");
 		H = mainView.Height;
 		W = mainView.Width;
 
@@ -145,8 +149,9 @@ public class Res extends Thread {
 		fantom = resize(fantom, bW, bH);
 		note = resize(note, bH * 2 / 3, bH * 2 / 3);
 
+		Log.d("Load","Loading sounds...");
 		loadSounds();
-
+		Log.d("Load", "Resourses are loaded and resized.");
 		resizedAnother = true;
 	}
 
@@ -159,12 +164,12 @@ public class Res extends Thread {
 		Typeface type = Typeface.createFromAsset(mainView.context.getAssets(), "comic.ttf");
 
 		textComment.setColor(0xFFFFFFFF);
-		textComment.setTextSize(mainView.Height / 23); // / 22);
+		textComment.setTextSize(mainView.Height / 28); // / 22);
 		textComment.setTextAlign(Paint.Align.CENTER);
 		textComment.setTypeface(type);
 
 		textInfo.setColor(0xFFFFFFFF);
-		textInfo.setTextSize(mainView.Height / 23); // / 22);
+		textInfo.setTextSize(mainView.Height / 26); // / 22);
 		textInfo.setTextAlign(Paint.Align.LEFT);
 		textInfo.setTypeface(type);
 
