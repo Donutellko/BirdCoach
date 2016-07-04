@@ -22,7 +22,7 @@ public class Dialogs {
 		Level.timeBool = false;
 		String s = "";
 
-		if (level > 1 && !(level == 5 && Level.hardBool)) {
+		if (level > 1 && !(level <= 8 && Level.hardBool)) {
 			s = "\n\t\t" + mainView.context.getString(R.string.s_already_got) + " " + Level.score + " " + wordForm("score", Level.score) + "\n";
 			if ((Level.hardBool) ? (Level.recordHard[0] > 0) : (Level.recordEasy[0] > 0))
 				s += ((Level.hardBool) ?
@@ -77,11 +77,12 @@ public class Dialogs {
 		if (NAM == null) NAM = "";
 		boolean notGood = true;
 		final EditText edittext = new EditText(mainView.context);
-		edittext.setText("BIRDIE");
+		edittext.setText(NAM.equals("") ? "BIRDIE" : NAM);
 		AlertDialog.Builder nameDialog = new AlertDialog.Builder(mainView.context);
 		Typeface type = Typeface.createFromAsset(mainView.context.getAssets(), "comic.ttf");
 
-		nameDialog.setTitle("Новый рекорд! Введите своё имя:")
+		nameDialog.setTitle("Новый рекорд! ")
+				  .setMessage("Вы под номером " + (Level.change_table + 1) + " в данной сложности. Введите своё имя (от одного до шести символов):")
 				  .setView(edittext)
 				  .setCancelable(false)
 				  .setIcon(R.mipmap.ic_launcher)
@@ -95,12 +96,25 @@ public class Dialogs {
 							  Toast toast = Toast.makeText(mainView.context, "Минимум один символ!", Toast.LENGTH_SHORT);
 							  toast.show();
 						  } else {
+							  dialog.cancel();
+
+							  if (Level.change_table >= 0) {
+								  if (Level.hardBool) {
+									  Level.nameRecordHard[Level.change_table] = NAM;
+								  } else {
+									  Level.nameRecordEasy[Level.change_table] = NAM;
+								  }
+
+							  }
+
 							  Toast toast = Toast.makeText(mainView.context, "Сохранено: " + NAM, Toast.LENGTH_SHORT);
 							  toast.show();
-							  dialog.cancel();
 						  }
 					  }
 				  });
+
+		nameDialog.show();
+
 /*
 		while (notGood) {
 			nameDialog.show();

@@ -23,7 +23,6 @@ public class Birds {
 		this.x = x;         // Координата по горизонтали
 		this.y = y;         // Координата по вертикали
 		this.type = type;   // Цвет и издаваемый звук
-
 	}
 
 	public void drawBird(Canvas canvas) {

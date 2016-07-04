@@ -191,8 +191,8 @@ public class mainView extends View {
 				canvas.drawText(Level.nameRecordEasy[i] + "", Width * 25 / 100, plusY + mult * (3 + i), Res.textSettings);
 				canvas.drawText(Level.nameRecordHard[i] + "", Width * 65 / 100, plusY + mult * (3 + i), Res.textSettings);
 
-				canvas.drawText(Level.recordEasy[i] + "", Width * 35 / 100, plusY + mult * (3 + i), Res.textSettings);
-				canvas.drawText(Level.recordHard[i] + "", Width * 75 / 100, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText(Level.recordEasy[i] + "", Width * 45 / 100, plusY + mult * (3 + i), Res.textSettings);
+				canvas.drawText(Level.recordHard[i] + "", Width * 85 / 100, plusY + mult * (3 + i), Res.textSettings);
 			}
 		}
 

@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
 		paused = true;
 
+		saveNames(Level.nameRecordEasy, false);
+		saveNames(Level.nameRecordHard, true);
 		saveScore(Level.recordEasy, false);
 		saveScore(Level.recordHard, true);
 
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 			ed.putInt("level", Level.level);
 			ed.putBoolean("hardBool", Level.hardBool);
 			ed.putInt("melodyLength", Level.melodyOrder.length);
+			ed.putInt("lifes", Level.lifes);
 			for (int i = 0; i < Level.melodyOrder.length; i++)
 				ed.putInt("melody_" + i, Level.melodyOrder[i]);
 			ed.putInt("time", Level.time);
@@ -194,12 +197,15 @@ public class MainActivity extends AppCompatActivity {
 	static void loadProgress() {
 		Log.e("", "Loading progress...");
 		if (sPref.getBoolean("is", false)) {
-			Level.newGame("continue");
-			State.state = States.GAME;
-			sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
-			Level.level = sPref.getInt("level", 0);
 			Level.hardBool = sPref.getBoolean("hardBool", false);
+			State.state = States.GAME;
+			Level.level = sPref.getInt("level", 0);
+
+			Level.newGame("continue");
+
+			sPref = mainView.context.getSharedPreferences("Scores", Context.MODE_PRIVATE);
 			Level.time = sPref.getInt("time", 0);
+			Level.lifes = sPref.getInt("lifes", 3);
 			int l = sPref.getInt("melodyLength", 0);
 			Level.melodyOrder = new int[l];
 			for (int i = 0; i < l; i++)

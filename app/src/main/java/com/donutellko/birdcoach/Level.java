@@ -1,6 +1,7 @@
 package com.donutellko.birdcoach;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -14,6 +15,8 @@ public class Level extends Thread {
 	// static int levels[] = {3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
 
 	static boolean timeBool = false, hardBool = false, musicBool = true;
+
+	public static int change_table = -1;
 
 	static int[] melodyOrder = new int[1];
 	static Birds[] birdPlaced = new Birds[9];
@@ -68,10 +71,10 @@ public class Level extends Thread {
 	}
 
 	public static void newGame(String cont) {
-		newRecord = false;
-		score = 0;
-		lifes = 3;
-		level = (hardBool) ? 8 : 0;
+		Toast toast = Toast.makeText(mainView.context,
+				  "Продолжение игры: " + ((hardBool) ? (level - 8) : level + 1) + " уровень на " + ((hardBool) ? "высокой" : "низкой") + " сложности.", Toast.LENGTH_LONG);
+		toast.show();
+		level--;
 		nextLevel();
 	}
 
@@ -110,8 +113,8 @@ public class Level extends Thread {
 
 		if (level > 1 && !hardBool)
 			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " " + mainView.context.getString(R.string.s_birds_mult), level);
-		else if (hardBool && !(level == 6))
-			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " " + mainView.context.getString(R.string.s_birds_mult), level - 5);
+		else if (hardBool && !(level == 9))
+			Dialogs.nextLevel(counts[melodyOrder.length - 3] + " " + mainView.context.getString(R.string.s_birds_mult), level - 8);
 	}
 
 	public static void createBirds(int[] order) {
@@ -217,7 +220,7 @@ public class Level extends Thread {
 				if (lifes == 0) {
 					com.donutellko.birdcoach.State.state = com.donutellko.birdcoach.States.GAME_LEVEL;
 					com.donutellko.birdcoach.State.victoryBool = false;
-					recordAdd(hardBool, score);
+					if (score != 0) recordAdd(hardBool, score);
 				}
 			}
 			Log.i("Game", "Checked " + i + " sounds, melody is wrong.");
@@ -271,23 +274,23 @@ public class Level extends Thread {
 	public static void recordAdd(boolean hardBool, int newScore) {
 		int[] tmp = (hardBool) ? recordHard : recordEasy;
 		String tmp1[] = (hardBool) ? nameRecordHard : nameRecordEasy;
-		int ch = -1;
+		change_table = -1;
 		if (newScore < tmp[4]) return;
 		else if (newScore < tmp[3]) {
 			tmp[4] = newScore;
-			ch = 4;
+			change_table = 4;
 		} else if (newScore < tmp[2]) {
 			tmp[4] = tmp[3];
 			tmp1[4] = tmp1[3];
 			tmp[3] = newScore;
-			ch = 3;
+			change_table = 3;
 		} else if (newScore < tmp[1]) {
 			tmp[4] = tmp[3];
 			tmp1[4] = tmp1[3];
 			tmp[3] = tmp[2];
 			tmp1[3] = tmp1[2];
 			tmp[2] = newScore;
-			ch = 2;
+			change_table = 2;
 		} else if (newScore < tmp[0]) {
 			tmp[4] = tmp[3];
 			tmp1[4] = tmp1[3];
@@ -296,7 +299,7 @@ public class Level extends Thread {
 			tmp[2] = tmp[1];
 			tmp1[2] = tmp1[1];
 			tmp[1] = newScore;
-			ch = 1;
+			change_table = 1;
 		} else {
 			tmp[4] = tmp[3];
 			tmp1[4] = tmp1[3];
@@ -307,16 +310,16 @@ public class Level extends Thread {
 			tmp[1] = tmp[0];
 			tmp1[0] = tmp1[1];
 			tmp[0] = newScore;
-			ch = 0;
+			change_table = 0;
 		}
 
-		if (ch >= 0) {
+		if (change_table >= 0) {
 			if (hardBool)  {
 				nameRecordHard = tmp1;
-				nameRecordHard[ch] = Dialogs.getName();
+				nameRecordHard[change_table] = Dialogs.getName();
 			} else {
 				nameRecordEasy = tmp1;
-				nameRecordEasy[ch] = Dialogs.getName();
+				nameRecordEasy[change_table] = Dialogs.getName();
 			}
 
 		}
